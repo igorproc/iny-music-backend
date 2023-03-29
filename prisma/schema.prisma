@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typegraphql {
+  provider = "typegraphql-prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid        Int    @id @default(autoincrement())
+  username   String @unique(map: "username") @db.VarChar(32)
+  password   String @db.VarChar(256)
+  name       String @db.VarChar(16)
+  surname    String @db.VarChar(16)
+  platform   String @db.VarChar(128)
+  gender     String
+  birthday   Int
+  phone      String @unique(map: "phone") @db.VarChar(18)
+  email      String @unique(map: "email") @db.VarChar(320)
+  role       String
+  blocking   String
+  avatar_id  Int
+  updated_at Int
+  created_at Int
+
+  @@map("users")
+}
+
+model applications {
+  app_id            Int                 @id @default(autoincrement())
+  title             String              @db.VarChar(64)
+  is_verified       Boolean             @default(true)
+  owner_uid         Int
+  secure_key        String              @db.VarChar(256)
+  access_key        String              @db.VarChar(256)
+  status            applications_status @default(disabled)
+  access_permission String              @db.VarChar(512)
+  domain            String              @db.VarChar(64)
+  redirect_uri      String              @db.VarChar(64)
+  created_at        Int
+
+  @@index([owner_uid], map: "owner_uid")
+}
+
+model artists {
+  aid        Int     @id @default(autoincrement())
+  owner_uid  Int
+  name       String  @db.VarChar(16)
+  surname    String  @db.VarChar(16)
+  alt_name   String  @db.VarChar(32)
+  verify     Boolean
+  avatar_id  Int
+  updated_at Int
+  created_at Int
+
+  @@index([owner_uid], map: "owner_uid")
+}
+
+model devices {
+  id         Int                @id @default(autoincrement())
+  app_id     Int
+  client_id  String             @db.VarChar(36)
+  uid        Int
+  ip         String             @db.VarChar(16)
+  platform   String             @db.VarChar(128)
+  permission devices_permission
+  updated_at Int
+  created_at Int
+
+  @@index([app_id], map: "app_id")
+  @@index([client_id], map: "client_id")
+  @@index([uid], map: "uid")
+}
+
+model feats {
+  fid        Int @id @default(autoincrement())
+  aid        Int
+  position   Int
+  updated_at Int
+  created_at Int
+
+  @@index([aid], map: "aid")
+}
+
+model filemanager {
+  fmid       Int    @id @default(autoincrement())
+  type       String
+  type_value Int
+  path       String @db.VarChar(512)
+}
+
+model genre {
+  gid   Int    @id @default(autoincrement())
+  title String @db.VarChar(64)
+}
+
+model genres {
+  gsid Int @id @default(autoincrement())
+  gid  Int
+
+  @@index([gid], map: "gid")
+}
+
+model likes {
+  lid        Int    @id @default(autoincrement())
+  uid        Int
+  type       String
+  type_value Int
+
+  @@index([uid], map: "uid")
+}
+
+model playlistcontent {
+  pcid          Int @id @default(autoincrement())
+  pid           Int
+  who_added_uid Int
+  sid           Int
+  updated_at    Int
+  created_at    Int
+
+  @@index([pid], map: "pid")
+  @@index([sid], map: "sid")
+  @@index([who_added_uid], map: "who_added_uid")
+}
+
+model playlistmembers {
+  mid        Int    @id @default(autoincrement())
+  pid        Int
+  uid        Int
+  role       String
+  updated_at Int
+  created_at Int
+
+  @@index([pid], map: "pid")
+  @@index([uid], map: "uid")
+}
+
+model playlists {
+  pid         Int    @id @default(autoincrement())
+  type        String
+  owner_uid   Int
+  aid         Int
+  fid         Int
+  is_private  Int
+  title       String @db.VarChar(64)
+  subtitle    String @db.VarChar(32)
+  avatar_id   String @db.VarChar(10)
+  share_token String @unique(map: "share_token") @db.VarChar(128)
+  updated_at  Int
+  created_at  Int
+
+  @@index([aid], map: "aid")
+  @@index([fid], map: "fid")
+  @@index([owner_uid], map: "owner_uid")
+}
+
+model songs {
+  sid        Int     @id @default(autoincrement())
+  aid        Int
+  fid        Int
+  gsid       Int
+  owner_uid  Int
+  title      String  @db.VarChar(64)
+  subtitle   String  @db.VarChar(32)
+  explicit   Boolean
+  duration   Int
+  updated_at Int
+  created_at Int
+
+  @@index([aid], map: "aid")
+  @@index([fid], map: "fid")
+  @@index([gsid], map: "gsid")
+  @@index([owner_uid], map: "owner_uid")
+}
+
+model userplayersetting {
+  uid            Int     @id
+  player_volume  Int
+  player_shuffle String
+  player_repeat  Boolean
+}
+
+enum devices_permission {
+  allow
+  deny
+}
+
+enum applications_status {
+  enabled
+  disabled
+}

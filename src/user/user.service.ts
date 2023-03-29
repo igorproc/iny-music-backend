@@ -1,11 +1,13 @@
 import { Injectable } from "@nestjs/common"
-import { AppDataSource } from "src/database/DataSource"
-import { Users } from "./entities/user.entity"
-
+import { PrismaClient, User } from '@prisma/client'
+import { PrismaService } from "src/prisma/prisma.service"
 @Injectable()
-export class UserService{
-  UserRepository = AppDataSource.getRepository(Users)
-  getAllUsers(): Promise<Users[]> {
-    return AppDataSource.manager.find(Users)
+export class UserService {
+  constructor(private prisma: PrismaService){}
+
+  async getAllUsers(): Promise<User[] | null>  {
+    const client = new PrismaClient()
+    await client.$connect()
+    return await client.user.findMany()
   }
 }

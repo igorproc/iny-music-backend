@@ -1,13 +1,13 @@
 import { Controller, Get } from "@nestjs/common"
 import { UserService } from "./user.service"
-import { Users } from "./entities/user.entity"
+import * as UserResolvers from "@generated/type-graphql"
 
 @Controller('/user')
 export class UserController {
   constructor(private readonly UserService: UserService) {}
 
   @Get()
-  getAllUsers(): Promise<Users[]> {
+  getAllUsers() {
     return this.UserService.getAllUsers()
   }
 }
