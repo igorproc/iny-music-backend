@@ -22,7 +22,7 @@ enum UserBlocking {
 @ObjectType({ description: 'User ' })
 export class UserModel {
   @Field(type => ID)
-  uid: string;
+  readonly uid: string;
 
   @Field()
   username: string;

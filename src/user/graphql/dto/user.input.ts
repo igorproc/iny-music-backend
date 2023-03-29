@@ -1,48 +1,42 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { MaxLength } from "class-validator";
 
-@InputType()
+@InputType({ description: 'input for input user data' })
 export class newUserInput {
   @Field()
   @MaxLength(32)
-  username: string;
+  username?: string;
 
   @Field()
   @MaxLength(256)
-  password: string;
+  password?: string;
 
   @Field()
   @MaxLength(16)
-  name: string;
+  name?: string;
 
   @Field()
   @MaxLength(16)
-  surname: string;
+  surname?: string;
 
   @Field()
   @MaxLength(128)
-  platform: string;
+  platform?: string;
 
   @Field()
-  gender: string;
+  gender?: string;
 
   @Field()
-  birthday: string;
+  birthday?: string;
 
   @Field()
   @MaxLength(18)
-  phone: string;
+  phone?: string;
 
   @Field()
   @MaxLength(320)
-  email: string;
-
-  @Field()
-  role: string
-
-  @Field()
-  blocking: string
+  email?: string;
   
   @Field()
-  avatar_id: number
+  avatar_id?: number
 }

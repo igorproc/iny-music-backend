@@ -8,16 +8,10 @@ export class UserResolver {
   constructor(
     private userService: UserService
   ){}
-  
-  @Query(returns => [UserModel], { description: 'Get List of all users' })
-  async getAllUsers(): Promise<User[] | Error> {
-    const users = await this.userService.getAllUsers()
-    return users
-  }
 
   @Query(
     returns => UserModel,
-    { description: 'Find User By uid' }
+    { description: 'Find User By uid' },
   )
   async getUserByUid(
       @Args('id', { type: () => Int }) id: number
