@@ -57,10 +57,10 @@ model artists {
   @@index([owner_uid], map: "owner_uid")
 }
 
-model devices {
+model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
-  client_id  String             @db.VarChar(36)
+  client_id  String             @unique(map: "client_id") @db.VarChar(36)
   uid        Int
   ip         String             @db.VarChar(16)
   platform   String             @db.VarChar(128)
@@ -69,8 +69,8 @@ model devices {
   created_at Int
 
   @@index([app_id], map: "app_id")
-  @@index([client_id], map: "client_id")
   @@index([uid], map: "uid")
+  @@map("devices")
 }
 
 model feats {
@@ -181,12 +181,12 @@ model userplayersetting {
   player_repeat  Boolean
 }
 
-enum devices_permission {
-  allow
-  deny
-}
-
 enum applications_status {
   enabled
   disabled
+}
+
+enum devices_permission {
+  allow
+  deny
 }
