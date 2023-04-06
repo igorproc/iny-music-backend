@@ -1,25 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { UserGender, UserBlocking, UserRole } from './user-enums';
 
-enum UserGender {
-  MALE = "male",
-  FEMALE = "female",
-}
-
-enum UserRole {
-  USER = 'user',
-  AUTHOR = 'author',
-  ADMIN = "admin",
-  LABEL = "label",
-  MANAGER = "manager",
-}
-
-enum UserBlocking {
-  DELETED = 'deleted',
-  BLOCKED = 'blocked',
-  COPYRIGHT = 'copyright'
-}
-
-@ObjectType({ description: 'User ' })
+@ObjectType({ description: 'User' })
 export class UserModel {
   @Field(type => ID)
   readonly uid: string;
@@ -53,9 +35,6 @@ export class UserModel {
 
   @Field()
   role: UserRole;
-
-  @Field()
-  blocking: UserBlocking;
 
   @Field()
   avatar_id: number;
