@@ -7,7 +7,6 @@ import { DeviceService } from "@/device/device.service";
 import { validateEmail } from "@utils/validate/email.util";
 import { validatePhone } from "@utils/validate/phone.util";
 import { SALT } from "./const/user.const";
-import { TAuthPayload } from "@/auth/types/auth.types";
 @Injectable()
 export class UserService {
   constructor(
@@ -82,7 +81,7 @@ export class UserService {
     return true
   }
 
-  async createNewUser(userData: User, clientId: string): Promise<User> {
+  async createNewUser(userData: User, clientId: string, request): Promise<User> {
     try {
       await this.reiquredFieldsAreValidateAndUnique(userData) 
 
@@ -107,7 +106,9 @@ export class UserService {
           HttpStatus.BAD_GATEWAY
         )
       }
-      await this.auth.signIn({ email: userData.email, password: userData.password })
+
+      await this.auth.signIn({ email: userData.email, password: userData.password }, request)
+      
       return user
     } catch(error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -116,22 +117,6 @@ export class UserService {
         }
       }
       throw error
-    }
-  }
-
-  async loginUser(loginData: TAuthPayload): Promise<User> {
-    try {
-      const jwt = this.auth.signIn(loginData)
-      if(!jwt) {
-        throw new HttpException('wrong password or email', HttpStatus.NOT_FOUND)
-      }
-      return await this.prisma.user.findUnique({
-        where: {
-          email: loginData.email
-        }
-      })
-    } catch {
-      throw new HttpException('session Expried', HttpStatus.BAD_REQUEST)
     }
   }
 }

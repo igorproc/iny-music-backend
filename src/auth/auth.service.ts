@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException, HttpException, HttpStatus, } from "@nestjs/common";
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "@/prisma/prisma.service";
-import { TAuthPayload, TUserDataFromDatabase, TSignInToken } from './types/auth.types';
+import { TAuthPayload } from './types/auth.types';
 import { compareSync } from "bcrypt";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -11,26 +12,24 @@ export class AuthService {
     private readonly jwt: JwtService,
   ){}
 
-  async signIn(signInData: TAuthPayload): Promise<TSignInToken> {
+  async signIn(signInData: TAuthPayload, request): Promise<User> {
     try {
-      const user: TUserDataFromDatabase = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUniqueOrThrow({
         where: {
           email: signInData.email
-        },
-        select: {
-          uid: true,
-          password: true
-        },
-        rejectOnNotFound: false
+        }
       })
       if(!compareSync(signInData.password, user.password)) {
         throw new UnauthorizedException()
       }
-      return {
-        access_token: await this.jwt.signAsync({ username: signInData.email, sub: user.uid })
-      }
-    } catch {
-      throw new HttpException('pizdec', HttpStatus.CONFLICT)
+      const accessToken = await this.jwt.signAsync({ username: signInData.email, sub: user.uid })
+      request?.res.cookie('authorization', 'Bearer ' + accessToken)
+
+      return user
+    } catch(error) {
+      console.log(error)
+      
+      throw new HttpException('wrong password or email', HttpStatus.NOT_FOUND)
     }
   }
 }

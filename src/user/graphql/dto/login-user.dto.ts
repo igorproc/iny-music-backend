@@ -5,7 +5,7 @@ import { MaxLength } from "class-validator";
 export class UserLogin {
   @Field()
   @MaxLength(32)
-  username?: string;
+  email: string;
 
   @Field()
   @MaxLength(256)

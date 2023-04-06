@@ -1,7 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
 import { MaxLength } from "class-validator";
-import { devicesPermission } from "./device.enum";
-
 @InputType({ description: 'input for input user data' })
 export class NewDeviceInput {
   @Field()
