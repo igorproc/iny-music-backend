@@ -13,7 +13,6 @@ import { AuthGuard } from './auth/auth.guard';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: ({ req }) => ({ req }),
       cors: {
         credentials: true,
       }
