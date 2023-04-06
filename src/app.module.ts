@@ -3,7 +3,6 @@ import { UserModule } from './user/user.module'
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
-import { DeviceModule } from './device/device.module';
 
 @Module({
   imports: [
@@ -15,7 +14,6 @@ import { DeviceModule } from './device/device.module';
       autoSchemaFile: true,
     }),
     UserModule,
-    DeviceModule
   ],
 })
 export class AppModule {}

@@ -8,18 +8,18 @@ datasource db {
 }
 
 model User {
-  uid        Int    @id @default(autoincrement())
-  username   String @unique(map: "username") @db.VarChar(32)
-  password   String @db.VarChar(256)
-  name       String @db.VarChar(16)
-  surname    String @db.VarChar(16)
-  platform   String @db.VarChar(128)
+  uid        Int     @id @default(autoincrement())
+  username   String  @unique(map: "username") @db.VarChar(32)
+  password   String  @db.VarChar(256)
+  name       String  @db.VarChar(16)
+  surname    String  @db.VarChar(16)
+  platform   String  @db.VarChar(128)
   gender     String
   birthday   Int
-  phone      String @unique(map: "phone") @db.VarChar(18)
-  email      String @unique(map: "email") @db.VarChar(320)
+  phone      String  @unique(map: "phone") @db.VarChar(18)
+  email      String  @unique(map: "email") @db.VarChar(320)
   role       String
-  blocking   String
+  blocking   String?
   avatar_id  Int
   updated_at Int
   created_at Int
@@ -27,7 +27,7 @@ model User {
   @@map("users")
 }
 
-model applications {
+model Application {
   app_id            Int                 @id @default(autoincrement())
   title             String              @db.VarChar(64)
   is_verified       Boolean             @default(true)
@@ -41,27 +41,14 @@ model applications {
   created_at        Int
 
   @@index([owner_uid], map: "owner_uid")
-}
-
-model artists {
-  aid        Int     @id @default(autoincrement())
-  owner_uid  Int
-  name       String  @db.VarChar(16)
-  surname    String  @db.VarChar(16)
-  alt_name   String  @db.VarChar(32)
-  verify     Boolean
-  avatar_id  Int
-  updated_at Int
-  created_at Int
-
-  @@index([owner_uid], map: "owner_uid")
+  @@map("applications")
 }
 
 model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
   client_id  String             @unique(map: "client_id") @db.VarChar(36)
-  uid        Int
+  uid        Int?
   ip         String             @db.VarChar(16)
   platform   String             @db.VarChar(128)
   permission devices_permission
@@ -69,11 +56,10 @@ model Device {
   created_at Int
 
   @@index([app_id], map: "app_id")
-  @@index([uid], map: "uid")
   @@map("devices")
 }
 
-model feats {
+model Feat {
   fid        Int @id @default(autoincrement())
   aid        Int
   position   Int
@@ -81,37 +67,44 @@ model feats {
   created_at Int
 
   @@index([aid], map: "aid")
+  @@map("feats")
 }
 
-model filemanager {
+model FileManager {
   fmid       Int    @id @default(autoincrement())
   type       String
   type_value Int
   path       String @db.VarChar(512)
+
+  @@map("filemanager")
 }
 
-model genre {
+model Genre {
   gid   Int    @id @default(autoincrement())
   title String @db.VarChar(64)
+
+  @@map("genre")
 }
 
-model genres {
+model Genres {
   gsid Int @id @default(autoincrement())
   gid  Int
 
   @@index([gid], map: "gid")
+  @@map("genres")
 }
 
-model likes {
+model Likes {
   lid        Int    @id @default(autoincrement())
   uid        Int
   type       String
   type_value Int
 
   @@index([uid], map: "uid")
+  @@map("likes")
 }
 
-model playlistcontent {
+model PlaylistContent {
   pcid          Int @id @default(autoincrement())
   pid           Int
   who_added_uid Int
@@ -122,9 +115,10 @@ model playlistcontent {
   @@index([pid], map: "pid")
   @@index([sid], map: "sid")
   @@index([who_added_uid], map: "who_added_uid")
+  @@map("playlistcontent")
 }
 
-model playlistmembers {
+model PlaylistMembers {
   mid        Int    @id @default(autoincrement())
   pid        Int
   uid        Int
@@ -134,9 +128,10 @@ model playlistmembers {
 
   @@index([pid], map: "pid")
   @@index([uid], map: "uid")
+  @@map("playlistmembers")
 }
 
-model playlists {
+model Playlist {
   pid         Int    @id @default(autoincrement())
   type        String
   owner_uid   Int
@@ -153,9 +148,10 @@ model playlists {
   @@index([aid], map: "aid")
   @@index([fid], map: "fid")
   @@index([owner_uid], map: "owner_uid")
+  @@map("playlists")
 }
 
-model songs {
+model Song {
   sid        Int     @id @default(autoincrement())
   aid        Int
   fid        Int
@@ -172,13 +168,31 @@ model songs {
   @@index([fid], map: "fid")
   @@index([gsid], map: "gsid")
   @@index([owner_uid], map: "owner_uid")
+  @@map("songs")
 }
 
-model userplayersetting {
+model UserPlayerSetting {
   uid            Int     @id
   player_volume  Int
   player_shuffle String
   player_repeat  Boolean
+
+  @@map("userplayersetting")
+}
+
+model Artist {
+  aid        Int     @id @default(autoincrement())
+  owner_uid  Int
+  name       String  @db.VarChar(16)
+  surname    String  @db.VarChar(16)
+  alt_name   String  @db.VarChar(32)
+  verify     Boolean
+  avatar_id  Int
+  updated_at Int
+  created_at Int
+
+  @@index([owner_uid], map: "owner_uid")
+  @@map("artists")
 }
 
 enum applications_status {

@@ -1,0 +1,1 @@
+export const JWT_SECRET_KEY: string = '06.04.23SPOTIFREEstartsimplementsSPOTIFYdesign'
