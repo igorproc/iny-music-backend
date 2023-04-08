@@ -186,8 +186,8 @@ model Artist {
   owner_uid  Int
   name       String  @db.VarChar(16)
   surname    String  @db.VarChar(16)
-  alt_name   String  @db.VarChar(32)
-  verify     Boolean
+  alt_name   String? @unique() @db.VarChar(32)
+  verify     Boolean @default(false)
   avatar_id  Int
   updated_at Int
   created_at Int

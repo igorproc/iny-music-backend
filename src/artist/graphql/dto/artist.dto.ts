@@ -17,7 +17,7 @@ export class ArtistModel {
   @MaxLength(16)
   surname: string;
 
-  @Field()
+  @Field(type => String, { nullable: true })
   @MaxLength(32)
   alt_name: string;
 
