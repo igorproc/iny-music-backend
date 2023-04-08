@@ -48,7 +48,7 @@ model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
   client_id  String             @unique(map: "client_id") @db.VarChar(36)
-  uid        Int?
+  uid        Int                
   ip         String             @db.VarChar(16)
   platform   String             @db.VarChar(128)
   permission devices_permission
@@ -56,6 +56,7 @@ model Device {
   created_at Int
 
   @@index([app_id], map: "app_id")
+  @@index([uid], map: "uid")
   @@map("devices")
 }
 

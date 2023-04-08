@@ -1,32 +1,31 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { devicesPermission } from './device.enum';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'User' })
 export class DeviceModel {
   @Field(type => ID)
   readonly id: number;
 
-  @Field()
+  @Field(type => Int)
   app_id: number;
 
-  @Field({ nullable: true })
+  @Field(type => String, { nullable: true })
   client_id: string;
 
-  @Field()
+  @Field(type => Int, { nullable: true })
   uid: number;
 
-  @Field()
+  @Field(type => String)
   ip: string;
 
-  @Field()
+  @Field(type => String)
   platform: string;
 
-  @Field()
+  @Field(type => String)
   permission: string;
 
-  @Field()
+  @Field(type => Int)
   updated_at: number;
 
-  @Field()
+  @Field(type => Int)
   created_at: number;
 }

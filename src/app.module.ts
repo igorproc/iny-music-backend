@@ -5,6 +5,7 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
+import { ArtistModule } from './artist/artist.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -13,12 +14,12 @@ import { AuthGuard } from './auth/auth.guard';
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: true,
-      context: ({ req }) => ({ req }),
       cors: {
         credentials: true,
       }
     }),
     UserModule,
+    ArtistModule,
   ],
   providers: [
     {

@@ -15,9 +15,9 @@ export class DeviceService {
           ip,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000)
-        }
+        },
       })
-    } catch {
+    } catch(error) {
       throw new HttpException('device is already write', HttpStatus.I_AM_A_TEAPOT)
     }
   }
