@@ -24,7 +24,7 @@ model User {
   updated_at Int
   created_at Int
 
-  @@map("users")
+  @@map("Users")
 }
 
 model Application {
@@ -41,14 +41,14 @@ model Application {
   created_at        Int
 
   @@index([owner_uid], map: "owner_uid")
-  @@map("applications")
+  @@map("Applications")
 }
 
 model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
   client_id  String             @unique(map: "client_id") @db.VarChar(36)
-  uid        Int                
+  uid        Int?             
   ip         String             @db.VarChar(16)
   platform   String             @db.VarChar(128)
   permission devices_permission
@@ -57,7 +57,7 @@ model Device {
 
   @@index([app_id], map: "app_id")
   @@index([uid], map: "uid")
-  @@map("devices")
+  @@map("Devices")
 }
 
 model Feat {
@@ -68,7 +68,7 @@ model Feat {
   created_at Int
 
   @@index([aid], map: "aid")
-  @@map("feats")
+  @@map("Feats")
 }
 
 model FileManager {
@@ -77,14 +77,14 @@ model FileManager {
   type_value Int
   path       String @db.VarChar(512)
 
-  @@map("filemanager")
+  @@map("FileManager")
 }
 
 model Genre {
   gid   Int    @id @default(autoincrement())
   title String @db.VarChar(64)
 
-  @@map("genre")
+  @@map("Genre")
 }
 
 model Genres {
@@ -92,7 +92,7 @@ model Genres {
   gid  Int
 
   @@index([gid], map: "gid")
-  @@map("genres")
+  @@map("Genres")
 }
 
 model Likes {
@@ -102,7 +102,7 @@ model Likes {
   type_value Int
 
   @@index([uid], map: "uid")
-  @@map("likes")
+  @@map("Likes")
 }
 
 model PlaylistContent {
@@ -116,7 +116,7 @@ model PlaylistContent {
   @@index([pid], map: "pid")
   @@index([sid], map: "sid")
   @@index([who_added_uid], map: "who_added_uid")
-  @@map("playlistcontent")
+  @@map("PlaylistContent")
 }
 
 model PlaylistMembers {
@@ -129,7 +129,7 @@ model PlaylistMembers {
 
   @@index([pid], map: "pid")
   @@index([uid], map: "uid")
-  @@map("playlistmembers")
+  @@map("PlaylistMembers")
 }
 
 model Playlist {
@@ -149,7 +149,7 @@ model Playlist {
   @@index([aid], map: "aid")
   @@index([fid], map: "fid")
   @@index([owner_uid], map: "owner_uid")
-  @@map("playlists")
+  @@map("Playlists")
 }
 
 model Song {
@@ -169,7 +169,7 @@ model Song {
   @@index([fid], map: "fid")
   @@index([gsid], map: "gsid")
   @@index([owner_uid], map: "owner_uid")
-  @@map("songs")
+  @@map("Songs")
 }
 
 model UserPlayerSetting {
@@ -178,7 +178,7 @@ model UserPlayerSetting {
   player_shuffle String
   player_repeat  Boolean
 
-  @@map("userplayersetting")
+  @@map("UserPlayerSetting")
 }
 
 model Artist {
