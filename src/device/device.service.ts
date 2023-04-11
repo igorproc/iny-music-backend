@@ -13,6 +13,7 @@ export class DeviceService {
           ...deviceData,
           permission: 'allow',
           ip,
+          uid: null,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000)
         },
