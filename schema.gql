@@ -33,9 +33,25 @@ type DeviceModel {
   created_at: Int!
 }
 
+"""Atrist"""
+type ArtistModel {
+  aid: ID!
+  owner_uid: Float!
+  name: String!
+  surname: String!
+  alt_name: String
+  verify: Boolean!
+  avatar_id: Int
+  updated_at: Float!
+  created_at: Float!
+}
+
 type Query {
   """Find User By uid"""
   getUserByUid(id: Int!): UserModel!
+
+  """return artist data by artistId"""
+  getAtristById(atristId: Int!): ArtistModel!
 }
 
 type Mutation {
@@ -47,6 +63,9 @@ type Mutation {
 
   """Declarate a new device"""
   createUserDevice(NewDeviceInput: NewDeviceInput!): DeviceModel!
+
+  """create an artist"""
+  CreateArtistInput(artistInput: CreateArtistInput!, artistImage: Upload): ArtistModel!
 }
 
 """input for input user data"""
@@ -73,3 +92,15 @@ input NewDeviceInput {
   client_id: String!
   platform: String!
 }
+
+"""Atrist model"""
+input CreateArtistInput {
+  owner_uid: Int!
+  name: String!
+  surname: String!
+  alt_name: String
+  avatarFile: Upload
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

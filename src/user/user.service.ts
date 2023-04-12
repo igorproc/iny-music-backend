@@ -100,13 +100,8 @@ export class UserService {
           updated_at: Math.floor(Date.now() / 1000)
         }
       })
-      if(!await this.device.setUidIntoUserDevice(clientId, user.uid)) {
-        throw new HttpException(
-          'текущее утройство пользователя не задекларированно, пожалуйста перегзагрузите страницу',
-          HttpStatus.BAD_GATEWAY
-        )
-      }
 
+      await this.device.setUidIntoUserDevice(clientId, user.uid)
       await this.auth.signIn({ email: userData.email, password: userData.password }, request)
       
       return user

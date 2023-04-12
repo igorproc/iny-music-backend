@@ -23,9 +23,9 @@ export class DeviceService {
     }
   }
 
-  async setUidIntoUserDevice(clientId: string, uid: number): Promise<Device> {
+  async setUidIntoUserDevice(clientId: string, uid: number): Promise<void> {
     try {
-      return await this.prisma.device.update({
+      await this.prisma.device.update({
         where: {
           client_id: clientId,
         },

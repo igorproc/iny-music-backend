@@ -7,24 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  uid        Int     @id @default(autoincrement())
-  username   String  @unique(map: "username") @db.VarChar(32)
-  password   String  @db.VarChar(256)
+model Artist {
+  aid        Int     @id @default(autoincrement())
+  owner_uid  Int
   name       String  @db.VarChar(16)
   surname    String  @db.VarChar(16)
-  platform   String  @db.VarChar(128)
-  gender     String
-  birthday   Int
-  phone      String  @unique(map: "phone") @db.VarChar(18)
-  email      String  @unique(map: "email") @db.VarChar(320)
-  role       String
-  blocking   String?
-  avatar_id  Int
+  alt_name   String? @db.VarChar(32)
+  verify     Boolean
+  avatar_id  Int?
   updated_at Int
   created_at Int
 
-  @@map("users")
+  @@index([owner_uid], map: "owner_uid")
+  @@map("artists")
 }
 
 model Application {
@@ -180,19 +175,24 @@ model UserPlayerSetting {
   @@map("userplayersetting")
 }
 
-model Artist {
-  aid        Int     @id @default(autoincrement())
-  owner_uid  Int
+model User {
+  uid        Int     @id @default(autoincrement())
+  username   String  @unique(map: "username") @db.VarChar(32)
+  password   String  @db.VarChar(256)
   name       String  @db.VarChar(16)
   surname    String  @db.VarChar(16)
-  alt_name   String  @db.VarChar(32)
-  verify     Boolean
+  platform   String  @db.VarChar(128)
+  gender     String
+  birthday   Int
+  phone      String  @unique(map: "phone") @db.VarChar(18)
+  email      String  @unique(map: "email") @db.VarChar(320)
+  role       String
+  blocking   String?
   avatar_id  Int
   updated_at Int
   created_at Int
 
-  @@index([owner_uid], map: "owner_uid")
-  @@map("artists")
+  @@map("users")
 }
 
 enum applications_status {

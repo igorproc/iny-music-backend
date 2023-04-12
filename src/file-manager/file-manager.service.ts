@@ -18,7 +18,7 @@ export class FileManagerService {
     }
   }
 
-  async declarateFileIntoDb(fileGroup: string, fileType: string): Promise<string> {
+  async declarateFileIntoDb(fileGroup: string, fileType: string): Promise<{ localFilePath: string, fileId: number }> {
     try {
       const fileId: { fmid: number } = await this.prisma.fileManager.create({
         data: {
@@ -40,27 +40,36 @@ export class FileManagerService {
         }
       })
       
-      return localFilePath
+      return {
+        localFilePath,
+        fileId: fileId.fmid
+      }
     } catch(error) {
       throw new Error(error)
     }
   }
 
-  async declarateFile(createReadStream, filename: string) {
+  async declarateFile(createReadStream, filename: string): Promise<number> {
     try {
+      // console.log(createReadStream, filename)
+      
       const fileType: string = filename.match(/\.[a-zA-Z0-9]*/)[0]      
+      let fileIdIntoDb: number = null
+
       if(soundTypes.includes(fileType)) {        
-        const songPath = await this.declarateFileIntoDb('songs', fileType)            
-        await this.fileUpload(createReadStream, songPath)
+        const songPath = await this.declarateFileIntoDb('songs', fileType)
+        fileIdIntoDb = songPath.fileId
+        await this.fileUpload(createReadStream, songPath.localFilePath)
       }
       else if(imageTypes.includes(fileType)) {
         const imagePath = await this.declarateFileIntoDb('images', fileType)
-        await this.fileUpload(createReadStream, imagePath)
+        fileIdIntoDb = imagePath.fileId
+        await this.fileUpload(createReadStream, imagePath.localFilePath)
       }
       else {
         throw new HttpException('некорректный файл', HttpStatus.BAD_REQUEST)
       }
-      return true
+      return fileIdIntoDb
     } catch(error) {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
     }
