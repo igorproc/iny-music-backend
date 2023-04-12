@@ -48,7 +48,7 @@ model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
   client_id  String             @unique(map: "client_id") @db.VarChar(36)
-  uid        Int?             
+  uid        Int?
   ip         String             @db.VarChar(16)
   platform   String             @db.VarChar(128)
   permission devices_permission
@@ -72,10 +72,9 @@ model Feat {
 }
 
 model FileManager {
-  fmid       Int    @id @default(autoincrement())
-  type       String
-  type_value Int
-  path       String @db.VarChar(512)
+  fmid Int     @id @default(autoincrement())
+  type String
+  path String? @db.VarChar(512)
 
   @@map("FileManager")
 }

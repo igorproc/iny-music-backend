@@ -1,0 +1,75 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""User"""
+type UserModel {
+  uid: ID!
+  username: String!
+  password: String
+  name: String!
+  surname: String!
+  platform: String!
+  gender: String!
+  birthday: Float!
+  phone: String!
+  email: String!
+  role: String!
+  avatar_id: Float!
+  updated_at: Float!
+  created_at: Float!
+}
+
+"""User"""
+type DeviceModel {
+  id: ID!
+  app_id: Int!
+  client_id: String
+  uid: Int
+  ip: String!
+  platform: String!
+  permission: String!
+  updated_at: Int!
+  created_at: Int!
+}
+
+type Query {
+  """Find User By uid"""
+  getUserByUid(id: Int!): UserModel!
+}
+
+type Mutation {
+  """create a new user"""
+  createNewUser(userData: NewUserInput!, clientId: String!): UserModel!
+
+  """login user"""
+  loginUser(loginData: UserLogin!): UserModel!
+
+  """Declarate a new device"""
+  createUserDevice(NewDeviceInput: NewDeviceInput!): DeviceModel!
+}
+
+"""input for input user data"""
+input NewUserInput {
+  username: String!
+  password: String!
+  name: String!
+  surname: String!
+  gender: String!
+  birthday: Float!
+  phone: String!
+  email: String!
+}
+
+"""input for input user data"""
+input UserLogin {
+  email: String!
+  password: String!
+}
+
+"""input for input user data"""
+input NewDeviceInput {
+  app_id: Int!
+  client_id: String!
+  platform: String!
+}
