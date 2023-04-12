@@ -1,5 +1,7 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
 import { MaxLength } from "class-validator";
+import { FileUpload } from "@/dto/file-upload.dto";
+import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
 
 @InputType({ description: "Atrist model" })
 export class CreateArtistInput {
@@ -16,11 +18,8 @@ export class CreateArtistInput {
 
   @Field(type => String, { nullable: true })
   @MaxLength(32)
-  altname: string;
+  alt_name: string;
 
-  @Field({ nullable: true })
-  verify: string;
-
-  @Field(type => Int)
-  avatar_id: number;
+  @Field(type => GraphQLUpload, { nullable: true })
+  avatarFile: FileUpload
 }
