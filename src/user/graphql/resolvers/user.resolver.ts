@@ -8,12 +8,12 @@ import { TAuthPayload } from '@/auth/types/auth.types';
 import { Public } from '@/decorators/isPublic.decorator';
 import { AuthService } from '@/auth/auth.service';
 
-@Resolver (of => UserModel)
+@Resolver (() => UserModel)
 export class UserResolver {
   constructor(private readonly userService: UserService, private readonly authService: AuthService){}
 
   @Query(
-    returns => UserModel,
+    () => UserModel,
     { description: 'Find User By uid' },
   )
   async getUserByUid(
@@ -24,7 +24,7 @@ export class UserResolver {
 
   @Public()
   @Mutation(
-    returns => UserModel,
+    () => UserModel,
     { description: 'create a new user' }
   )
   async createNewUser(
@@ -37,7 +37,7 @@ export class UserResolver {
 
   @Public()
   @Mutation(
-    returns => UserModel,
+    () => UserModel,
     { description: 'login user' }
   )
   async loginUser(

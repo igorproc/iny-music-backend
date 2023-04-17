@@ -3,11 +3,11 @@ import { MaxLength } from "class-validator";
 
 @InputType({ description: 'input for input user data' })
 export class UserLogin {
-  @Field()
+  @Field(() => String)
   @MaxLength(32)
   email: string;
 
-  @Field()
+  @Field(() => String)
   @MaxLength(256)
   password: string
 }

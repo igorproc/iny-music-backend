@@ -2,30 +2,30 @@ import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType({ description: 'User' })
 export class DeviceModel {
-  @Field(type => ID)
+  @Field(() => ID)
   readonly id: number;
 
-  @Field(type => Int)
+  @Field(() => Int)
   app_id: number;
 
-  @Field(type => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   client_id: string;
 
-  @Field(type => Int, { nullable: true })
+  @Field(() => Int, { nullable: true })
   uid: number;
 
-  @Field(type => String)
+  @Field(() => String)
   ip: string;
 
-  @Field(type => String)
+  @Field(() => String)
   platform: string;
 
-  @Field(type => String)
+  @Field(() => String)
   permission: string;
 
-  @Field(type => Int)
+  @Field(() => Int)
   updated_at: number;
 
-  @Field(type => Int)
+  @Field(() => Int)
   created_at: number;
 }

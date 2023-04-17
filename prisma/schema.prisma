@@ -82,10 +82,12 @@ model Genre {
 }
 
 model Genres {
-  gsid Int @id @default(autoincrement())
+  id   Int @id @default(autoincrement())
+  gsid Int
   gid  Int
 
   @@index([gid], map: "gid")
+  @@index([gsid], map: "gsid")
   @@map("genres")
 }
 
@@ -149,7 +151,7 @@ model Playlist {
 model Song {
   sid        Int     @id @default(autoincrement())
   aid        Int
-  fid        Int
+  fid        Int?
   gsid       Int
   owner_uid  Int
   title      String  @db.VarChar(64)

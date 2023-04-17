@@ -6,12 +6,12 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { ArtistModule } from './artist/artist.module';
-import { FileManagerModule } from './file-manager/file-manager.module';
+import { SongModule } from './song/song.module';
+import { GenreModule } from './genre/genre.module';
+import { GenresModule } from './genres/genres.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env'
-    }),
+    ConfigModule.forRoot({ envFilePath: '.env' }),
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
@@ -22,7 +22,9 @@ import { FileManagerModule } from './file-manager/file-manager.module';
     }),
     UserModule,
     ArtistModule,
-    FileManagerModule,
+    GenreModule,
+    GenresModule,
+    SongModule,
   ],
   providers: [
     {

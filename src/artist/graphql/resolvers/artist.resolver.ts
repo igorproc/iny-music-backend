@@ -7,13 +7,13 @@ import { Artist } from '@prisma/client';
 import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
 import { FileUpload } from '@/dto/file-upload.dto';
 
-@Resolver(of => ArtistModel)
+@Resolver(() => ArtistModel)
 export class ArtistResolver {
   constructor( private readonly artistService: ArtistService ){}
 
   @Public()
   @Query(
-    returns => ArtistModel,
+    () => ArtistModel,
     { description: "return artist data by artistId" }
   )
   async getAtristById(
@@ -24,7 +24,7 @@ export class ArtistResolver {
 
   @Public()
   @Mutation(
-    returns => ArtistModel,
+    () => ArtistModel,
     { description: "create an artist" }
   )
   async CreateArtistInput(
