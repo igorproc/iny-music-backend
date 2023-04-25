@@ -1,15 +1,15 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
 import { MaxLength } from "class-validator";
-@InputType({ description: 'input for input user data' })
+@InputType({ description: 'device data input' })
 export class NewDeviceInput {
-  @Field(type => Int)
+  @Field(() => Int)
   app_id: number;
 
-  @Field(type => String)
+  @Field(() => String)
   @MaxLength(36)
   client_id: string;
 
-  @Field(type => String)
+  @Field(() => String)
   @MaxLength(128)
   platform: string;
 }

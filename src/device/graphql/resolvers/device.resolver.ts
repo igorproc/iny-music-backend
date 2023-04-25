@@ -5,13 +5,13 @@ import { NewDeviceInput } from "@/device/graphql/dto/create-device.dto";
 import { IpAddress } from "@decorators/IpAddress.decorator";
 import { Public } from "@/decorators/isPublic.decorator";
 
-@Resolver(of => DeviceModel)
+@Resolver(() => DeviceModel)
 export class DeviceResolver {
   constructor(private deviceService: DeviceService){}
 
   @Public()
   @Mutation(
-    returns => DeviceModel,
+    () => DeviceModel,
     { description: 'Declarate a new device' }
   )
   async createUserDevice(

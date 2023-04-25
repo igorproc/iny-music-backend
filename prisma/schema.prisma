@@ -58,19 +58,23 @@ model Device {
 model Feat {
   fid        Int @id @default(autoincrement())
   aid        Int
+  sid        Int
   position   Int
   updated_at Int
   created_at Int
 
   @@index([aid], map: "aid")
+  @@index([sid], map: "sid")
   @@map("feats")
 }
 
 model FileManager {
-  fmid Int     @id @default(autoincrement())
-  type String
-  path String? @db.VarChar(512)
+  fmid       Int     @id @default(autoincrement())
+  type_value Int?
+  type       String
+  path       String? @db.VarChar(512)
 
+  @@index([type_value], map: "type_value")
   @@map("filemanager")
 }
 
@@ -82,10 +86,12 @@ model Genre {
 }
 
 model Genres {
-  gsid Int @id @default(autoincrement())
+  id   Int @id @default(autoincrement())
+  gsid Int
   gid  Int
 
   @@index([gid], map: "gid")
+  @@index([gsid], map: "gsid")
   @@map("genres")
 }
 
@@ -147,22 +153,24 @@ model Playlist {
 }
 
 model Song {
-  sid        Int     @id @default(autoincrement())
-  aid        Int
-  fid        Int
-  gsid       Int
-  owner_uid  Int
-  title      String  @db.VarChar(64)
-  subtitle   String  @db.VarChar(32)
-  explicit   Boolean
-  duration   Int
-  updated_at Int
-  created_at Int
+  sid             Int     @id @default(autoincrement())
+  aid             Int
+  fid             Int?
+  gsid            Int?
+  file_manager_id Int
+  owner_uid       Int
+  title           String  @db.VarChar(64)
+  subtitle        String?  @db.VarChar(32)
+  explicit        Boolean
+  duration        Int
+  updated_at      Int
+  created_at      Int
 
   @@index([aid], map: "aid")
   @@index([fid], map: "fid")
   @@index([gsid], map: "gsid")
   @@index([owner_uid], map: "owner_uid")
+  @@index([file_manager_id], map: "file_manager_id")
   @@map("songs")
 }
 

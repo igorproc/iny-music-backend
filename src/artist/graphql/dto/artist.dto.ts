@@ -3,33 +3,33 @@ import { MaxLength } from "class-validator";
 
 @ObjectType({ description: "Atrist" })
 export class ArtistModel {
-  @Field(type => ID)
+  @Field(() => ID)
   readonly aid: number;
 
-  @Field()
+  @Field(() => Int)
   owner_uid: number;
 
-  @Field()
+  @Field(() => String)
   @MaxLength(16)
   name: string;
 
-  @Field()
+  @Field(() => String)
   @MaxLength(16)
   surname: string;
 
-  @Field(type => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   @MaxLength(32)
   alt_name: string;
 
-  @Field(type => Boolean)
+  @Field(() => Boolean)
   verify: boolean;
 
-  @Field(type => Int, { nullable: true })
+  @Field(() => Int, { nullable: true })
   avatar_id: number;
 
-  @Field()
+  @Field(() => Int)
   updated_at: number;
 
-  @Field()
+  @Field(() => Int)
   created_at: number;
 }

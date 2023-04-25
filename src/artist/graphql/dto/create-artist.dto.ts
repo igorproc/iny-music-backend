@@ -5,21 +5,18 @@ import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
 
 @InputType({ description: "Atrist model" })
 export class CreateArtistInput {
-  @Field(type => Int)
-  owner_uid: number;
+  @Field(() => Int)
+  ownerUid: number;
 
-  @Field(type => String)
+  @Field(() => String)
   @MaxLength(16)
   name: string;
 
-  @Field(type => String)
+  @Field(() => String)
   @MaxLength(16)
   surname: string;
 
-  @Field(type => String, { nullable: true })
+  @Field(() => String, { nullable: true })
   @MaxLength(32)
-  alt_name: string;
-
-  @Field(type => GraphQLUpload, { nullable: true })
-  avatarFile: FileUpload
+  altName: string;
 }
