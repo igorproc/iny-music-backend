@@ -11,27 +11,35 @@ export class GenreService {
     try {
       return await this.prisma.genre.findMany()
     } catch(error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
   async fillGenreList(): Promise<void> {
-    const { data } = await axios.get('https://raw.githubusercontent.com/voltraco/genres/master/genres.json')
+    try {
+      const { data } = await axios.get('https://raw.githubusercontent.com/voltraco/genres/master/genres.json')
 
-    await Promise.all(data.map(async (genreTitle) => {
-      await this.prisma.genre.create({
-        data: {
-          title: genreTitle
-        }
-      })
-    }));
+      await Promise.all(data.map(async (genreTitle) => {
+        await this.prisma.genre.create({
+          data: {
+            title: genreTitle
+          }
+        })
+      }));
+    } catch(error) {
+      console.error(error)
+    }
   }
 
   async getGenreById(gid: number): Promise<Genre> {
-    return this.prisma.genre.findUnique({
-      where: {
-        gid
-      }
-    })
+    try {
+      return this.prisma.genre.findUnique({
+        where: {
+          gid
+        }
+      })
+    } catch(error) {
+      console.error(error)
+    }
   }
 }

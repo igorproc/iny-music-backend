@@ -46,6 +46,21 @@ type ArtistModel {
   created_at: Int!
 }
 
+type Song {
+  sid: ID!
+  fileUrl: String
+  aid: Int!
+  fid: Int
+  gsid: Int
+  owner_uid: Int!
+  title: String!
+  subtitle: String!
+  explicit: Boolean!
+  duration: Int!
+  updated_at: Int
+  created_at: Int
+}
+
 """Genre"""
 type GenreModel {
   gid: ID!
@@ -61,6 +76,9 @@ type Query {
 
   """Get All Genres List"""
   getAllGenreList: [GenreModel!]
+
+  """get song by sid"""
+  getSongById(id: Int!): Song!
 }
 
 type Mutation {
@@ -76,8 +94,11 @@ type Mutation {
   """create an artist"""
   CreateArtistInput(artistInput: CreateArtistInput!, artistImage: Upload): ArtistModel!
 
-  """Declarate genres for current music"""
-  declarateGenresInput(newGenresInput: DeclarateGenreModel!): String
+  """Set All Genres"""
+  setAllGenres: String
+
+  """create song"""
+  createSong(songData: CreateSongInput!, songFile: Upload!): Song
 }
 
 """input for input user data"""
@@ -116,8 +137,16 @@ input CreateArtistInput {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-"""Genres Input"""
-input DeclarateGenreModel {
-  gsid: Int!
-  gidList: [Int!]!
+input CreateSongInput {
+  aid: Int!
+  featsNames: [String!]
+  genresIds: [Int!]!
+  ownerUid: Int!
+  title: String!
+  subtitle: String!
+  explicit: Boolean!
+  duration: Int!
+  song: Upload
+  largeImg: Upload
+  smallImg: Upload
 }

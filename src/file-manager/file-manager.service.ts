@@ -1,77 +1,86 @@
-import { PrismaService } from '@/prisma/prisma.service';
-import { getUploadedFileDirectory } from '@/utils/currentDirectory';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { createWriteStream } from 'fs';
+import { PrismaService } from '@/prisma/prisma.service';
 import { imageTypes, soundTypes } from './const/file-manager.const';
+import { FileManager } from '@prisma/client';
+import { FileUpload } from '@/dto/file-upload.dto';
+import { LocalFileManagerService } from './local/local-file-manager.service';
+import { CdnFileManager } from './cdn/cdn-file-manager.service';
+import { TFileTypeCheckOutput, TUploadFileOutput } from './types/file-manager.type';
 
 @Injectable()
 export class FileManagerService {
-  constructor( private readonly prisma: PrismaService ){}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly localFileManager: LocalFileManagerService,
+    private readonly cdnFileManager: CdnFileManager,
+  ){}
 
-  async fileUpload(createReadStream, filePath: string): Promise<boolean> {
-    try {
-      await createReadStream().
-        pipe(createWriteStream(filePath))
-      return true
-    } catch(error) {
-      throw new Error(error)
-    }
-  }
-
-  async declarateFileIntoDb(fileGroup: string, fileType: string): Promise<{ localFilePath: string, fileId: number }> {
-    try {
-      const fileId: { fmid: number } = await this.prisma.fileManager.create({
-        data: {
-          type: fileGroup === 'songs' ? 'song_id' : 'avatar_id',
-        },
-        select: {
-          fmid: true
-        }
-      })
-      const localFilePath = getUploadedFileDirectory(fileId.fmid, fileGroup, fileType)
-      const filePath = process.env.CDN_LINK + localFilePath.substring(1)      
-
-      await this.prisma.fileManager.update({
-        where: {
-          fmid: fileId.fmid
-        },
-        data: {
-          path: filePath
-        }
-      })
-      
+  checkFileType = (fileName: string): TFileTypeCheckOutput => {
+    const fileType: string = fileName.match(/\.[a-zA-Z0-9]*/)[0]
+    if(Object.keys(soundTypes).includes(fileType)) {
       return {
-        localFilePath,
-        fileId: fileId.fmid
+        mimeFileExtension: soundTypes[fileType],
+        fileType: 'song',
+        fileExtension: fileType
+      }
+    }
+    if(Object.keys(imageTypes).includes(fileType)) {
+      return {
+        mimeFileExtension: imageTypes[fileType],
+        fileType: 'image',
+        fileExtension: fileType
+      }
+    }
+    return null
+  }
+
+  uploadFile = async(file: FileUpload, fileId: number): Promise<TUploadFileOutput> => {
+    try {
+      const fileType: TFileTypeCheckOutput = this.checkFileType(file.filename)
+      if(!fileType) throw new Error('неверный тип файла')
+
+      const localFilePath = await this.localFileManager.uploadFile(file.createReadStream, fileId.toString(), fileType.fileExtension)
+      if(!localFilePath) throw new Error('искаженный файл')
+      
+      const localFile = this.localFileManager.getFile(localFilePath, fileId + fileType.fileExtension, fileType.mimeFileExtension)
+      if(!localFile) throw new Error('ошибка сервера')
+
+      const CDNFilePath = await this.cdnFileManager.uploadFileToCDN(localFile)
+      if(!CDNFilePath) throw new Error('Ахтунг CDN поплыл!')
+
+      return {
+        CDNFilePath,
+        fileType: fileType.fileType
       }
     } catch(error) {
-      throw new Error(error)
+      console.log(error)
     }
   }
 
-  async declarateFile(createReadStream, filename: string): Promise<number> {
+  createFileManagerRecord = async(file: FileUpload, fileId: number): Promise<FileManager> => {
     try {
-      // console.log(createReadStream, filename)
-      
-      const fileType: string = filename.match(/\.[a-zA-Z0-9]*/)[0]      
-      let fileIdIntoDb: number = null
+      const CDNFilePath: TUploadFileOutput = await this.uploadFile(file, fileId)
+      return await this.prisma.fileManager.create({
+        data: {
+          type_value: fileId,
+          type: CDNFilePath.fileType === 'song' ? 'song_id': 'image_id',
+          path: CDNFilePath.CDNFilePath
+        }
+      })
+    } catch {
+      throw new HttpException('ошибка сервера', HttpStatus.SERVICE_UNAVAILABLE)
+    }
+  }
 
-      if(soundTypes.includes(fileType)) {        
-        const songPath = await this.declarateFileIntoDb('songs', fileType)
-        fileIdIntoDb = songPath.fileId
-        await this.fileUpload(createReadStream, songPath.localFilePath)
-      }
-      else if(imageTypes.includes(fileType)) {
-        const imagePath = await this.declarateFileIntoDb('images', fileType)
-        fileIdIntoDb = imagePath.fileId
-        await this.fileUpload(createReadStream, imagePath.localFilePath)
-      }
-      else {
-        throw new HttpException('некорректный файл', HttpStatus.BAD_REQUEST)
-      }
-      return fileIdIntoDb
-    } catch(error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+  getFileManagerRecordById = async(id: number): Promise<FileManager> => {
+    try {
+      return await this.prisma.fileManager.findFirst({
+        where: {
+          fmid: id
+        }
+      })
+    } catch {
+      throw new HttpException('записи с таким id не существует', HttpStatus.NOT_FOUND)
     }
   }
 }

@@ -1,9 +1,9 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Artist } from '@prisma/client';
+import { Artist, FileManager } from '@prisma/client';
 import { CreateArtistInput } from './graphql/dto/create-artist.dto';
-import { FileManagerService } from '@/file-manager/file-manager.service';
 import { FileUpload } from '@/dto/file-upload.dto';
+import { FileManagerService } from '@/file-manager/file-manager.service';
 
 @Injectable()
 export class ArtistService {
@@ -26,21 +26,31 @@ export class ArtistService {
 
   async createArtist(artistData: CreateArtistInput, artistImage: FileUpload): Promise<Artist> {
     try {
-      let fileId: number = null
-      if(artistImage) {     
-        fileId = await this.fileManager.declarateFile(artistImage.createReadStream, artistImage.filename)
-      }
-      return await this.prisma.artist.create({
+      const artist = await this.prisma.artist.create({
         data: {
           ...artistData,
-          avatar_id: fileId,
+          avatar_id: null,
           verify: false,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000)
         }
       })
+
+      if(!artistImage) return artist
+
+      const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(artistImage, artist.aid)
+
+      return await this.prisma.artist.update({
+        where: {
+          aid: artist.aid
+        },
+        data: {
+          avatar_id: uploadFilePath.fmid
+        }
+      })
+
     } catch(error) {
-      console.log(error)
+      console.error(error)
       
       throw new HttpException('Artist Is has been created', HttpStatus.NOT_ACCEPTABLE)
     }

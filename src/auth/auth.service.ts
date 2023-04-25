@@ -26,9 +26,7 @@ export class AuthService {
       request?.res.cookie('authorization', 'Bearer ' + accessToken)
 
       return user
-    } catch(error) {
-      console.log(error)
-      
+    } catch {      
       throw new HttpException('wrong password or email', HttpStatus.NOT_FOUND)
     }
   }

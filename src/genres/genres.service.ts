@@ -1,6 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { DeclarateGenreModel } from './graphql/dto/create-genre.dto';
+import { DeclarateGenreModel } from "./types/TDeclarateGenre.type"
 
 @Injectable()
 export class GenresService {
@@ -8,18 +8,21 @@ export class GenresService {
     private prisma: PrismaService,
   ){}
 
-  async declarateMusicGenre(genreData: DeclarateGenreModel): Promise<void> {
+  async declarateMusicGenre(genreData: DeclarateGenreModel): Promise<Boolean> {
     try {
-      await Promise.all(genreData.gidList.map(async (gid) => {
+      return await Promise.all(genreData.gidList.map(async (gid) => {
         await this.prisma.genres.create({
           data: {
             gsid: genreData.gsid,
             gid
           }
         })
-      }))
+      })
+      ).then(
+       () => { return true }
+      )
     } catch(error) {
-      console.log(error)
+      console.error(error)
     }
   }
 }
