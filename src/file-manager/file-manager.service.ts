@@ -48,6 +48,9 @@ export class FileManagerService {
       const CDNFilePath = await this.cdnFileManager.uploadFileToCDN(localFile)
       if(!CDNFilePath) throw new Error('Ахтунг CDN поплыл!')
 
+      const localFileIsDelete = this.localFileManager.deleteFile(localFilePath)
+      if(!localFileIsDelete) throw new Error('0_0')
+
       return {
         CDNFilePath,
         fileType: fileType.fileType

@@ -58,11 +58,13 @@ model Device {
 model Feat {
   fid        Int @id @default(autoincrement())
   aid        Int
+  sid        Int
   position   Int
   updated_at Int
   created_at Int
 
   @@index([aid], map: "aid")
+  @@index([sid], map: "sid")
   @@map("feats")
 }
 
@@ -158,7 +160,7 @@ model Song {
   file_manager_id Int
   owner_uid       Int
   title           String  @db.VarChar(64)
-  subtitle        String  @db.VarChar(32)
+  subtitle        String?  @db.VarChar(32)
   explicit        Boolean
   duration        Int
   updated_at      Int

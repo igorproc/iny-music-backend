@@ -26,9 +26,10 @@ export class LocalFileManagerService {
     }
   }
 
-  deleteFile = (filePath: string): void => {
+  deleteFile = (filePath: string): boolean => {
     try {
       unlinkSync(filePath)
+      return true
     } catch(error) {
       console.log(error)
     }

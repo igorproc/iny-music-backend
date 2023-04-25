@@ -6,7 +6,7 @@ import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
 @InputType({ description: "Atrist model" })
 export class CreateArtistInput {
   @Field(() => Int)
-  owner_uid: number;
+  ownerUid: number;
 
   @Field(() => String)
   @MaxLength(16)
@@ -18,5 +18,5 @@ export class CreateArtistInput {
 
   @Field(() => String, { nullable: true })
   @MaxLength(32)
-  alt_name: string;
+  altName: string;
 }

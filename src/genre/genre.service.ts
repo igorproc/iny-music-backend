@@ -7,7 +7,7 @@ import axios from 'axios';
 export class GenreService {
   constructor(private readonly prisma: PrismaService){}
 
-  async getAllGenreList(): Promise<Genre[]> {
+  getAllGenreList = async(): Promise<Genre[]> => {
     try {
       return await this.prisma.genre.findMany()
     } catch(error) {
@@ -15,7 +15,7 @@ export class GenreService {
     }
   }
 
-  async fillGenreList(): Promise<void> {
+  fillGenreList = async(): Promise<void> => {
     try {
       const { data } = await axios.get('https://raw.githubusercontent.com/voltraco/genres/master/genres.json')
 
@@ -31,7 +31,7 @@ export class GenreService {
     }
   }
 
-  async getGenreById(gid: number): Promise<Genre> {
+  getGenreById = async(gid: number): Promise<Genre> => {
     try {
       return this.prisma.genre.findUnique({
         where: {

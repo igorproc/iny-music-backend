@@ -8,7 +8,6 @@ import { AuthGuard } from './auth/auth.guard';
 import { ArtistModule } from './artist/artist.module';
 import { SongModule } from './song/song.module';
 import { GenreModule } from './genre/genre.module';
-import { GenresModule } from './genres/genres.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 @Module({
   imports: [
@@ -25,7 +24,7 @@ import { FileManagerModule } from './file-manager/file-manager.module';
     ArtistModule,
     GenreModule,
     SongModule,
-    FileManagerModule
+    FileManagerModule,
   ],
   providers: [
     {

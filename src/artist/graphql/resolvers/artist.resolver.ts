@@ -27,7 +27,7 @@ export class ArtistResolver {
     () => ArtistModel,
     { description: "create an artist" }
   )
-  async CreateArtistInput(
+  async createArtist(
     @Args('artistInput', { type: () => CreateArtistInput }) artistData: CreateArtistInput,
     @Args('artistImage', { type: () => GraphQLUpload, nullable: true }) artistImage: FileUpload
   ): Promise<Artist> {

@@ -24,11 +24,30 @@ export class ArtistService {
     }
   }
 
+  getArtistByAltName = async(altName: string): Promise<number> => {
+    try {
+      const artistId = await this.prisma.artist.findFirst({
+        where: {
+          alt_name: altName
+        },
+        select: {
+          aid: true
+        }
+      })
+      return artistId.aid
+    } catch {
+      throw new HttpException('Artist is wasnt found', HttpStatus.NOT_FOUND)
+    }
+  }
+
   async createArtist(artistData: CreateArtistInput, artistImage: FileUpload): Promise<Artist> {
     try {
       const artist = await this.prisma.artist.create({
         data: {
-          ...artistData,
+          owner_uid: artistData.ownerUid,
+          alt_name: artistData.altName,
+          name: artistData.name,
+          surname: artistData.surname,
           avatar_id: null,
           verify: false,
           created_at: Math.floor(Date.now() / 1000),

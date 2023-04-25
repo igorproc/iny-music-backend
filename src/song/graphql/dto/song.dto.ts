@@ -1,41 +1,31 @@
 import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { ArtsistModelForSong } from "./atrist-output.dto";
+import { FeatModelForSong } from "./feat-output.dto";
 
 
 @ObjectType("Song")
 export class SongModel {
-  @Field(() => ID)
-  sid: number;
+  @Field(() => ArtsistModelForSong, { nullable: true })
+  artist: ArtsistModelForSong;
+
+  @Field(() => [String], { nullable: true })
+  genres: string[];
+
+  @Field(() => FeatModelForSong, { nullable: true })
+  feats: number;
 
   @Field(() => String, { nullable: true })
-  fileUrl: string;
-
-  @Field(() => Int)
-  aid: number;
-
-  @Field(() => Int, { nullable: true })
-  fid: number;
-
-  @Field(() => Int, { nullable: true })
-  gsid: number
-
-  @Field(() => Int)
-  owner_uid: number;
-
-  @Field(() => String)
   title: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   subtitle: string;
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true })
   explicit: boolean;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   duration: number;
 
-  @Field(() => Int, { nullable: true })
-  updated_at: number;
-
-  @Field(() => Int, { nullable: true })
-  created_at: number;
+  @Field(() => String, { nullable: true })
+  songUrl: string;
 }

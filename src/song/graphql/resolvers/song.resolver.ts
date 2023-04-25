@@ -5,6 +5,7 @@ import { SongService } from "@/song/song.service";
 import { CreateSongInput } from "../dto/create-song.dto";
 import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
 import { FileUpload } from "@/dto/file-upload.dto";
+import { SuccsessOperationStatus } from "@/dto/status.dto";
 
 @Resolver(() => SongModel)
 export class SongResolver {
@@ -25,13 +26,13 @@ export class SongResolver {
 
   @Public()
   @Mutation(
-    () => SongModel,
+    () => SuccsessOperationStatus,
     { description: "create song", nullable: true }
   )
   async createSong(
     @Args('songData', { type: () => CreateSongInput }) songData: CreateSongInput,
     @Args('songFile', { type: () => GraphQLUpload }) songFile: FileUpload
-  ) {
+  ):Promise<SuccsessOperationStatus> {
     return await this.songService.createSong(songData, songFile)
   }
 }
