@@ -45,7 +45,7 @@ export class SongService {
         title: songDataById.title,
         subtitle: songDataById.subtitle,
         duration: songDataById.duration,
-        songUrl: fileUrl,
+        songUrl: fileUrl.path,
         explicit: songDataById.explicit,
       }
     } catch(error) {

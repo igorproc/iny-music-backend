@@ -67,7 +67,7 @@ type FeatOutputforSong {
 type Song {
   artist: ArtistOutputforSong
   genres: [String!]
-  feats: FeatOutputforSong
+  feats: [FeatOutputforSong!]
   title: String
   subtitle: String
   explicit: Boolean

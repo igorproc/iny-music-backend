@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { ArtsistModelForSong } from "./atrist-output.dto";
 import { FeatModelForSong } from "./feat-output.dto";
 
@@ -11,8 +11,8 @@ export class SongModel {
   @Field(() => [String], { nullable: true })
   genres: string[];
 
-  @Field(() => FeatModelForSong, { nullable: true })
-  feats: number;
+  @Field(() => [FeatModelForSong], { nullable: true })
+  feats: FeatModelForSong[];
 
   @Field(() => String, { nullable: true })
   title: string;

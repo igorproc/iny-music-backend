@@ -50,8 +50,8 @@ export class FeatService {
           position: true
         }
       })
-      for(const featId of featIds) {
-        const artistDataById = await this.artist.getAtrist(featId.aid)
+      for(const featId of featIds) {        
+        const artistDataById = await this.artist.getAtrist(featId.aid)        
         featNamesList.push({ name: artistDataById.alt_name, position: featId.position })
       }
       return featNamesList

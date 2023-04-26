@@ -38,7 +38,7 @@ export class GenresService {
 
       const genreGidList = allGenresGids.map((genre) => genre.gid)
       Promise.all(genreGidList.map(async (gid) => {
-        genreList.push(this.genre.getGenreById(gid))
+        genreList.push((await this.genre.getGenreById(gid)).title)
       }))
       return genreList
     } catch(error) {
