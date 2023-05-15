@@ -4,33 +4,26 @@
 
 """User"""
 type UserModel {
-  uid: ID!
-  username: String!
-  password: String
-  name: String!
-  surname: String!
-  platform: String!
-  gender: String!
-  birthday: Int!
-  phone: String!
-  email: String!
-  role: String!
-  avatar_id: Int!
-  updated_at: Int!
-  created_at: Int!
+  username: String
+  gender: UserGender
+  birthday: Int
+  phone: String
+  avatarUrl: String
+  email: String
+  role: UserRole
 }
 
-"""User"""
-type DeviceModel {
-  id: ID!
-  app_id: Int!
-  client_id: String
-  uid: Int
-  ip: String!
-  platform: String!
-  permission: String!
-  updated_at: Int!
-  created_at: Int!
+enum UserGender {
+  male
+  female
+}
+
+enum UserRole {
+  user
+  author
+  admin
+  label
+  manager
 }
 
 """Atrist"""
@@ -98,34 +91,30 @@ type Query {
 
 type Mutation {
   """create a new user"""
-  createNewUser(userData: NewUserInput!, clientId: String!): UserModel!
+  createUser(userData: RegisterUser!, clientId: String!): UserModel
 
   """login user"""
-  loginUser(loginData: UserLogin!): UserModel!
+  loginUser(loginData: UserLogin!): UserModel
 
   """Declarate a new device"""
-  createUserDevice(NewDeviceInput: NewDeviceInput!): DeviceModel!
+  createUserDevice(deviceData: NewDeviceInput!): String
 
   """create an artist"""
   createArtist(artistInput: CreateArtistInput!, artistImage: Upload): ArtistModel!
-
-  """Set All Genres"""
-  setAllGenres: String
 
   """create song"""
   createSong(songData: CreateSongInput!, songFile: Upload!): status
 }
 
 """input for input user data"""
-input NewUserInput {
-  username: String!
+input RegisterUser {
+  email: String!
   password: String!
   name: String!
   surname: String!
   gender: String!
-  birthday: String!
+  birthday: Int!
   phone: String!
-  email: String!
 }
 
 """input for input user data"""
@@ -136,8 +125,7 @@ input UserLogin {
 
 """device data input"""
 input NewDeviceInput {
-  app_id: Int!
-  client_id: String!
+  appId: Int!
   platform: String!
 }
 

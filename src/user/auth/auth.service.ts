@@ -23,7 +23,7 @@ export class AuthService {
         throw new UnauthorizedException()
       }
       const accessToken = await this.jwt.signAsync({ username: signInData.email, sub: user.uid })
-      request?.res.cookie('authorization', 'Bearer ' + accessToken)
+      request?.res.cookie('Authorization', 'Bearer ' + accessToken)
 
       return user
     } catch {      

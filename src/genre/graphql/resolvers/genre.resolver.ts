@@ -15,12 +15,4 @@ export class GenreResolver {
   async getAllGenreList(): Promise<GenreModel[]> {
     return await this.genreService.getAllGenreList()
   }
-
-  @Mutation(
-    () => String,
-    { description: "Set All Genres", nullable: true }
-  )
-  async setAllGenres(): Promise<void> {
-    return await this.genreService.fillGenreList()
-  }
 }

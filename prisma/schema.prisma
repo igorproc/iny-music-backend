@@ -196,7 +196,7 @@ model User {
   email      String  @unique(map: "email") @db.VarChar(320)
   role       String
   blocking   String?
-  avatar_id  Int
+  avatar_id  Int?
   updated_at Int
   created_at Int
 

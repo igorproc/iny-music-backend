@@ -1,18 +1,29 @@
+import { registerEnumType } from "@nestjs/graphql";
+
 export enum UserGender {
-  MALE = "male",
-  FEMALE = "female",
+  male = "MALE",
+  female = "FEMALE",
 }
+registerEnumType(UserGender, {
+  name: 'UserGender'
+})
 
 export enum UserRole {
-  USER = 'user',
-  AUTHOR = 'author',
-  ADMIN = "admin",
-  LABEL = "label",
-  MANAGER = "manager",
+  user = 'USER',
+  author = 'AUTHOR',
+  admin = "ADMIN",
+  label = "LABEL",
+  manager = "MANAGER",
 }
+registerEnumType(UserRole, {
+  name: 'UserRole'
+})
 
 export enum UserBlocking {
-  DELETED = 'deleted',
-  BLOCKED = 'blocked',
-  COPYRIGHT = 'copyright'
+  deleted = 'DELETED',
+  blocked = 'BLOCKED',
+  copyright = 'COPYRIGHT'
 }
+registerEnumType(UserBlocking, {
+  name: 'UserBlocking'
+})

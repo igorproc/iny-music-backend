@@ -1,47 +1,26 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { UserGender, UserBlocking, UserRole } from './user-enums';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { UserGender, UserRole } from './user-enums';
 
 @ObjectType({ description: 'User' })
 export class UserModel {
-  @Field(() => ID)
-  readonly uid: string;
-
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   username: string;
 
-  @Field(() => String, { nullable: true })
-  password: string;
-
-  @Field(() => String)
-  name: string;
-
-  @Field(() => String)
-  surname: string;
-
-  @Field(() => String)
-  platform: string;
-
-  @Field(() => String)
+  @Field(() => UserGender, { nullable: true })
   gender: UserGender;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   birthday: number;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   phone: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  avatarUrl?: string;
+
+  @Field(() => String, { nullable: true })
   email: string;
 
-  @Field(() => String)
+  @Field(() => UserRole, { nullable: true })
   role: UserRole;
-
-  @Field(() => Int)
-  avatar_id: number;
-
-  @Field(() => Int)
-  updated_at: number;
-
-  @Field(() => Int)
-  created_at: number;
 }
