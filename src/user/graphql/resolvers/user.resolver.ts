@@ -17,7 +17,7 @@ export class UserResolver {
   )
   async getUserByUid(
       @Args('id', { type: () => Int }) id: number
-    ): Promise<User | Error> {
+    ): Promise<UserModel> {
     return await this.userService.getUserByUid(id)
   }
 

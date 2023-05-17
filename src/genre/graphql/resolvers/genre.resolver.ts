@@ -1,4 +1,4 @@
-import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 import { Public } from '@/decorators/isPublic.decorator';
 import { GenreService } from '@/genre/genre.service';
 import { GenreModel } from '../dto/genre.dto';

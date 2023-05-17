@@ -16,9 +16,7 @@ import { FileManagerModule } from '@/file-manager/file-manager.module';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       uploads: true,
-      cors: {
-        credentials: true,
-      }
+      cors: { credentials: true, origin: true }
     }),
     UserModule,
     ArtistModule,

@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { hashSync } from "bcrypt";
-import RandExp from "randexp";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthService } from "@/user/auth/auth.service";
 import { DeviceService } from "@/device/device.service";
@@ -22,13 +21,29 @@ export class UserService {
     private readonly fileManager: FileManagerService,
   ){}
 
-  async getUserByUid(uid: number): Promise<User> {
+  async getUserByUid(uid: number): Promise<UserModel> {
     try {
-      return await this.prisma.user.findUniqueOrThrow({
+      let avatarUrl = null
+      const userData = await this.prisma.user.findUniqueOrThrow({
         where: {
           uid: uid
         }
       })
+
+      if(userData.avatar_id) {
+        avatarUrl = await this.fileManager.getFileManagerRecordById(userData.avatar_id)
+      }
+
+      return {
+        uid: userData.uid,
+        username: userData.username,
+        gender: userData.gender,
+        birthday: userData.birthday,
+        phone: userData.phone,
+        avatarUrl: avatarUrl?.path,
+        email: userData.email,
+        role: userData.role
+      }
     } catch {
       throw new HttpException('Пользовтеля с таким id не существет', HttpStatus.NOT_FOUND)
     }
@@ -102,34 +117,26 @@ export class UserService {
 
       await this.device.setUidIntoUserDevice(clientId, user.uid)
       await this.auth.signIn({ email: userData.email, password: userData.password }, request)
-
+      
       return user
     } catch(error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new HttpException('что-то не так с данными', HttpStatus.BAD_REQUEST)
       }
-      throw error
     }
   }
 
   async loginUser(loginData: UserLogin, request): Promise<UserModel> {
     try {
       const userData = await this.auth.signIn(loginData, request)
-      let avatarUrl = null
-      if(userData.avatar_id) {
-        avatarUrl = this.fileManager.getFileManagerRecordById(userData.avatar_id)
-      }
-      return {
-        username: userData.username,
-        gender: UserGender[userData.gender],
-        birthday: userData.birthday,
-        phone: userData.phone,
-        avatarUrl: avatarUrl.path,
-        email: userData.email,
-        role: UserRole[userData.role]
-      }
-    } catch {
 
+      if(userData) {
+        return await this.getUserByUid(userData.uid)
+      }
+    } catch(error) {      
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new HttpException('неверный логин или пароль', HttpStatus.BAD_REQUEST)
+      }
     }
   }
 }

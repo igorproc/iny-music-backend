@@ -4,6 +4,7 @@
 
 """User"""
 type UserModel {
+  uid: ID
   username: String
   gender: UserGender
   birthday: Int
