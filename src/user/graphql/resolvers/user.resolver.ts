@@ -2,15 +2,14 @@ import { Resolver, Query, Args, Int, Mutation, Context } from '@nestjs/graphql';
 import { UserService } from "@/user/user.service"
 import { User } from '@prisma/client';
 import { UserModel } from "@/user/graphql/dto/user.dto";
-import { NewUserInput } from "@/user/graphql/dto/create-user.dto";
+import { RegisterUser } from "@/user/graphql/dto/create-user.dto";
 import { UserLogin } from "@/user/graphql/dto/login-user.dto";
-import { TAuthPayload } from '@/auth/types/auth.types';
+import { TAuthPayload } from '@/user/auth/types/auth.types';
 import { Public } from '@/decorators/isPublic.decorator';
-import { AuthService } from '@/auth/auth.service';
 
 @Resolver (() => UserModel)
 export class UserResolver {
-  constructor(private readonly userService: UserService, private readonly authService: AuthService){}
+  constructor(private readonly userService: UserService){}
 
   @Query(
     () => UserModel,
@@ -18,17 +17,17 @@ export class UserResolver {
   )
   async getUserByUid(
       @Args('id', { type: () => Int }) id: number
-    ): Promise<User | Error> {
+    ): Promise<UserModel> {
     return await this.userService.getUserByUid(id)
   }
 
   @Public()
   @Mutation(
     () => UserModel,
-    { description: 'create a new user' }
+    { description: 'create a new user', nullable: true }
   )
-  async createNewUser(
-    @Args('userData', { type: () => NewUserInput }) userData: User,
+  async createUser(
+    @Args('userData', { type: () => RegisterUser }) userData: RegisterUser,
     @Args('clientId', { type: () => String }) clientId: string,
     @Context("req") req,
   ): Promise<User> {
@@ -38,12 +37,12 @@ export class UserResolver {
   @Public()
   @Mutation(
     () => UserModel,
-    { description: 'login user' }
+    { description: 'login user', nullable: true }
   )
   async loginUser(
     @Args('loginData', { type: () => UserLogin }) loginData: TAuthPayload,
     @Context("req") req,
-  ): Promise<User> {
-    return await this.authService.signIn(loginData, req)
+  ): Promise<UserModel> {
+    return await this.userService.loginUser(loginData, req)
   }
 }

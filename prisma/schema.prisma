@@ -56,15 +56,16 @@ model Device {
 }
 
 model Feat {
-  fid        Int @id @default(autoincrement())
+  fid        Int    @id @default(autoincrement())
   aid        Int
-  sid        Int
+  type       String
+  type_value Int
   position   Int
   updated_at Int
   created_at Int
 
   @@index([aid], map: "aid")
-  @@index([sid], map: "sid")
+  @@index([type_value], map: "sid")
   @@map("feats")
 }
 
@@ -133,16 +134,16 @@ model PlaylistMembers {
 }
 
 model Playlist {
-  pid         Int    @id @default(autoincrement())
+  pid         Int     @id @default(autoincrement())
   type        String
   owner_uid   Int
   aid         Int
-  fid         Int
-  is_private  Int
-  title       String @db.VarChar(64)
-  subtitle    String @db.VarChar(32)
-  avatar_id   String @db.VarChar(10)
-  share_token String @unique(map: "share_token") @db.VarChar(128)
+  fid         Int?
+  is_private  Boolean
+  title       String  @db.VarChar(64)
+  subtitle    String? @db.VarChar(32)
+  avatar_id   Int
+  share_token String  @unique(map: "share_token") @db.VarChar(128)
   updated_at  Int
   created_at  Int
 
@@ -160,7 +161,7 @@ model Song {
   file_manager_id Int
   owner_uid       Int
   title           String  @db.VarChar(64)
-  subtitle        String?  @db.VarChar(32)
+  subtitle        String? @db.VarChar(32)
   explicit        Boolean
   duration        Int
   updated_at      Int
@@ -196,7 +197,7 @@ model User {
   email      String  @unique(map: "email") @db.VarChar(320)
   role       String
   blocking   String?
-  avatar_id  Int
+  avatar_id  Int?
   updated_at Int
   created_at Int
 

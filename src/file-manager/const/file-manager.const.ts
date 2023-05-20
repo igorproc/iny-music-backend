@@ -1,13 +1,12 @@
 export const soundTypes = {
-  '.mp3': 'audio/mpeg',
-  '.flac': 'audio/x-flac',
-  '.wav': 'audio/wav',
-  '.wma': 'audio/x-ms-wma',
-  '.aac': 'audio/aac'
+  'audio/mpeg': '.mp3',
+  'audio/x-flac': '.flac',
+  'audio/wav': '.wav',
+  'audio/x-ms-wma': '.wma',
+  'audio/aac': '.aac'
 }
 
 export const imageTypes = {
-  '.jpg': 'image/jpeg',
-  '.png': 'image/png',
-  '.jpeg': 'image/jpeg'
+  'image/jpeg': '.jpg',
+  'image/png': '.png',
 }

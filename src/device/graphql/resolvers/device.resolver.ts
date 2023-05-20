@@ -1,24 +1,23 @@
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
-import { DeviceModel } from "@/device/graphql/dto/device.dto";
 import { DeviceService } from "@/device/device.service";
 import { NewDeviceInput } from "@/device/graphql/dto/create-device.dto";
 import { IpAddress } from "@decorators/IpAddress.decorator";
 import { Public } from "@/decorators/isPublic.decorator";
 
-@Resolver(() => DeviceModel)
+@Resolver(() => String)
 export class DeviceResolver {
   constructor(private deviceService: DeviceService){}
 
   @Public()
   @Mutation(
-    () => DeviceModel,
-    { description: 'Declarate a new device' }
+    () => String,
+    { description: 'Declarate a new device', nullable: true }
   )
   async createUserDevice(
-      @Args('NewDeviceInput', { type: () => NewDeviceInput })
+      @Args('deviceData', { type: () => NewDeviceInput })
       deviceData: NewDeviceInput,
       @IpAddress() ip: string,
-    ): Promise<DeviceModel> {
+    ): Promise<string> {
       return await this.deviceService.setUserDevice(deviceData, ip)
   }
 }

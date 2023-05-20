@@ -4,9 +4,6 @@ import { Public } from '@/decorators/isPublic.decorator';
 import { ArtistService } from '@/artist/artist.service';
 import { CreateArtistInput } from '../dto/create-artist.dto';
 import { Artist } from '@prisma/client';
-import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
-import { FileUpload } from '@/dto/file-upload.dto';
-
 @Resolver(() => ArtistModel)
 export class ArtistResolver {
   constructor( private readonly artistService: ArtistService ){}
@@ -29,8 +26,7 @@ export class ArtistResolver {
   )
   async createArtist(
     @Args('artistInput', { type: () => CreateArtistInput }) artistData: CreateArtistInput,
-    @Args('artistImage', { type: () => GraphQLUpload, nullable: true }) artistImage: FileUpload
   ): Promise<Artist> {
-    return await this.artistService.createArtist(artistData, artistImage)
+    return await this.artistService.createArtist(artistData)
   }
 }

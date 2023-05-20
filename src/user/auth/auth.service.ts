@@ -1,9 +1,8 @@
 import { Injectable, UnauthorizedException, HttpException, HttpStatus } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "@/prisma/prisma.service";
-import { TAuthPayload } from './types/auth.types';
+import { TAuthPayload, TAuthData } from './types/auth.types';
 import { compareSync } from "bcrypt";
-import { User } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -12,18 +11,22 @@ export class AuthService {
     private readonly jwt: JwtService,
   ){}
 
-  async signIn(signInData: TAuthPayload, request): Promise<User> {
+  async signIn(signInData: TAuthPayload, request): Promise<TAuthData> {
     try {
       const user = await this.prisma.user.findUniqueOrThrow({
         where: {
           email: signInData.email
+        },
+        select: {
+          uid: true,
+          password: true
         }
       })
       if(!compareSync(signInData.password, user.password)) {
         throw new UnauthorizedException()
       }
       const accessToken = await this.jwt.signAsync({ username: signInData.email, sub: user.uid })
-      request?.res.cookie('authorization', 'Bearer ' + accessToken)
+      request?.res.cookie('Authorization', 'Bearer ' + accessToken)
 
       return user
     } catch {      
