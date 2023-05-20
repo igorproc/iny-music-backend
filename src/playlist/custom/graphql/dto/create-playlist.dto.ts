@@ -1,10 +1,9 @@
 import { FileUpload } from "@/dto/file-upload.dto";
 import { Field, InputType, Int } from "@nestjs/graphql";
 import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
-import { NewSongFragment } from "./song/song-input.dto";
 
-@InputType('NewAlbumModel')
-export class NewAlbumData {
+@InputType("NewCustomPlaylistInput")
+export class NewCustomPlaylistInput {
   @Field(() => Int)
   uid: number
 
@@ -17,12 +16,12 @@ export class NewAlbumData {
   @Field(() => String, { nullable: true })
   subtitle: string
 
-  @Field(() => GraphQLUpload)
-  albumImage: FileUpload
+  @Field(() => Boolean)
+  isPrivate: boolean
 
-  @Field(() => [String], { nullable: true })
-  featNames: string[]
+  @Field(() => GraphQLUpload, { nullable: true })
+  playlistImage: FileUpload
 
-  @Field(() => [NewSongFragment], { nullable: true })
-  songs: NewSongFragment[]
+  @Field(() => [Int], { nullable: true })
+  songsIds: number[]
 }

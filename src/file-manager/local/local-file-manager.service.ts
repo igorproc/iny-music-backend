@@ -37,6 +37,9 @@ export class LocalFileManagerService {
   }
 
   async waitFileUpload(file): Promise<FileUpload> {
+    const isPromise = Boolean(file && typeof file.then === 'function')
+    if(!isPromise) return file
+
     return new Promise((resolve) => {
       file.then((fileData) => resolve(fileData))
     })

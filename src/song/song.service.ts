@@ -2,11 +2,10 @@ import { GenresService } from '@/genres/genres.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { FileManager, Song } from '@prisma/client';
-import { FileUpload } from '@/dto/file-upload.dto';
 import { FileManagerService } from '@/file-manager/file-manager.service';
 import { ArtistService } from '@/artist/artist.service';
 import { FeatService } from '@/feat/feat.service';
-import { NewSongFragment } from '@/playlist/album/graphql/dto/song-input.dto';
+import { NewSongFragment } from '@/playlist/album/graphql/dto/song/song-input.dto';
 
 @Injectable()
 export class SongService {

@@ -17,7 +17,7 @@ import { PlaylistModule } from './playlist/playlist.module';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       uploads: true,
-      cors: { credentials: true, origin: true }
+      cors: { credentials: true, origin: true },
     }),
     UserModule,
     ArtistModule,

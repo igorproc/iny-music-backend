@@ -13,7 +13,7 @@ export class AlbumPlaylistMutationsResolver {
     { description: 'add new album (only artist)', nullable: true }
   )
   async createNewAlbum(
-    @Args('albumData', { type: () => NewAlbumData }) albumData: NewAlbumData
+    @Args('albumData', { type: () => NewAlbumData }) albumData: NewAlbumData,
   ): Promise<string> {
     return await this.albumService.createAlbum(albumData)
   }

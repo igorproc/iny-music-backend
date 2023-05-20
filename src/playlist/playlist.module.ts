@@ -1,9 +1,8 @@
-import { PlaylistAlbumModule } from './album/playlist-album.module';
 import { Module } from '@nestjs/common';
-import { PlaylistService } from './playlist.service';
+import { PlaylistCustomModule } from './custom/playlist-custom.module';
+import { PlaylistAlbumModule } from './album/playlist-album.module';
 
 @Module({
-  imports: [PlaylistAlbumModule],
-  providers: [PlaylistService]
+  imports: [PlaylistAlbumModule, PlaylistCustomModule],
 })
 export class PlaylistModule {}

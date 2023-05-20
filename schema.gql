@@ -46,6 +46,37 @@ type GenreModel {
   title: String!
 }
 
+type ArtistOutputforSong {
+  id: ID
+  name: String
+  surname: String
+  altName: String
+}
+
+type FeatOutputforSong {
+  name: String
+  position: Int
+}
+
+type SongDataFragment {
+  artist: ArtistOutputforSong
+  genres: [String!]
+  feats: [FeatOutputforSong!]
+  title: String
+  subtitle: String
+  explicit: Boolean
+  duration: Int
+  songUrl: String
+}
+
+type AlbumData {
+  artistId: Int!
+  title: String!
+  subtitle: String
+  albumLogo: String
+  songs: [SongDataFragment!]!
+}
+
 type Query {
   """Find User By uid"""
   getUserByUid(id: Int!): UserModel!
@@ -55,6 +86,9 @@ type Query {
 
   """Get All Genres List"""
   getAllGenreList: [GenreModel!]
+
+  """get album data"""
+  getAlbumByShareToken(shareToken: String!): AlbumData!
 }
 
 type Mutation {

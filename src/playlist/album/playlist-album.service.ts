@@ -1,3 +1,4 @@
+import { AlbumDataOutput } from './graphql/dto/album.dto';
 import { PlaylistContentService } from '@/playlist/content/playlist-content.service';
 import { FeatService } from '@/feat/feat.service';
 import { FileManagerService } from '@/file-manager/file-manager.service';
@@ -59,6 +60,22 @@ export class PlaylistAlbumService {
     if(playlistUpdate && contentIsUpload) {
       console.log(playlistUpdate)
       return '123'
+    }
+  }
+
+  async getAlbumData(shareToken: string): Promise<AlbumDataOutput> {
+    const playlistData = await this.prisma.playlist.findFirst({ where: { type: playlistType.album, share_token: shareToken } })
+
+    if(!playlistData) return
+    const imageUrl = await this.fileManager.getFileManagerRecordById(playlistData.avatar_id)
+    const songsData = await this.playlistContent.getPlaylistContent(playlistData.pid)
+
+    return {
+      artistId: playlistData.aid,
+      title: playlistData.title,
+      subtitle: playlistData.subtitle,
+      albumLogo: imageUrl.path,
+      songs: songsData
     }
   }
 }
