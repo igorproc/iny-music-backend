@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { createWriteStream, readFileSync, unlinkSync } from 'fs';
 import { File } from '@web-std/file'
+import { createWriteStream, readFileSync, unlinkSync } from 'fs';
+import { FileUpload } from '@/dto/file-upload.dto';
 
 @Injectable()
 export class LocalFileManagerService {
@@ -33,5 +34,11 @@ export class LocalFileManagerService {
     } catch(error) {
       console.log(error)
     }
+  }
+
+  async waitFileUpload(file): Promise<FileUpload> {
+    return new Promise((resolve) => {
+      file.then((fileData) => resolve(fileData))
+    })
   }
 }

@@ -40,7 +40,7 @@ export class ArtistService {
     }
   }
 
-  async createArtist(artistData: CreateArtistInput, artistImage: FileUpload): Promise<Artist> {
+  async createArtist(artistData: CreateArtistInput): Promise<Artist> {
     try {
       const artist = await this.prisma.artist.create({
         data: {
@@ -55,9 +55,9 @@ export class ArtistService {
         }
       })
 
-      if(!artistImage) return artist
+      if(!artistData.avatarFile) return artist
 
-      const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(artistImage, artist.aid)
+      const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(artistData.avatarFile, artist.aid)
 
       return await this.prisma.artist.update({
         where: {

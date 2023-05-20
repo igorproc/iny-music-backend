@@ -2,12 +2,11 @@ import { GenresService } from '@/genres/genres.service';
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { FileManager, Song } from '@prisma/client';
-import { CreateSongInput } from './graphql/dto/create-song.dto';
 import { FileUpload } from '@/dto/file-upload.dto';
 import { FileManagerService } from '@/file-manager/file-manager.service';
-import { SuccsessOperationStatus } from '@/dto/status.dto';
 import { ArtistService } from '@/artist/artist.service';
 import { FeatService } from '@/feat/feat.service';
+import { NewSongFragment } from '@/playlist/album/graphql/dto/song-input.dto';
 
 @Injectable()
 export class SongService {
@@ -53,7 +52,7 @@ export class SongService {
     }
   }
 
-  async createSong(songData: CreateSongInput, songFile: FileUpload): Promise<SuccsessOperationStatus> {
+  async createSong(songData: NewSongFragment): Promise<number> {
     const song: Song = await this.prisma.song.create({
       data: {
         aid: songData.aid,
@@ -62,7 +61,7 @@ export class SongService {
         file_manager_id: 0,
         owner_uid: songData.ownerUid,
         title: songData.title,
-        subtitle: songData.subtitle,
+        subtitle: songData.subtitle ? songData.subtitle : null,
         explicit: songData.explicit,
         duration: songData.duration,
         created_at: Math.floor(Date.now() / 1000),
@@ -71,8 +70,11 @@ export class SongService {
     })
 
     const genresDeclarateStatus: number = await this.genres.declarateMusicGenre({ gsid: song.sid, gidList: songData.genresIds } )
-    const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(songFile, song.sid)
-    const featId: number = await this.feat.createFeatsRecord(songData.featsNames, song.sid)
+    const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(songData.songFile, song.sid)
+    let featId: number = null
+    if(songData.featsNames && songData.featsNames.length) {
+      featId = await this.feat.createFeatsRecord(songData.featsNames, 'song', song.sid)
+    }
 
     await this.prisma.song.update({
       where: {
@@ -84,10 +86,18 @@ export class SongService {
         fid: featId ? featId : null
       }
     })
+    
+    return song.sid
+  }
 
-    return {
-      code: 200,
-      message: 'succsesfull'
+  async createSongList(songsData: NewSongFragment[]): Promise<number[]> {    
+    const songsIds: number[] = []
+
+    for(const song of songsData) {
+      const songId = await this.createSong(song)
+      if(songId) songsIds.push(songId)
     }
+
+    if(songsIds.length) return songsIds
   }
 }

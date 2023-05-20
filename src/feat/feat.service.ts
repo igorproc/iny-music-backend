@@ -10,24 +10,25 @@ export class FeatService {
     private readonly artist: ArtistService
   ){}
 
-  createFeatsRecord = async(featsName: string[], songId: number): Promise<number> => {
+  createFeatsRecord = async(featsName: string[], featType: string, typeValue: number): Promise<number> => {
     try {
-      for (const artist of featsName) {
+      featsName.forEach(async (artist) => {
         const artistId = await this.artist.getArtistByAltName(artist)
-        await this.createFeatRecord(artistId, featsName.findIndex((featName) => featName === artist), songId)
-      }
-      return songId
+        await this.createFeatRecord(artistId, featsName.findIndex((featName) => featName === artist), featType, typeValue)
+      })
+      return typeValue
     } catch(error) {
       console.error(error)
     }
   }
 
-  createFeatRecord = async(artistId: number, position: number, songId: number) => {
+  createFeatRecord = async(artistId: number, position: number, featType: string, songId: number) => {
     try {
       await this.prisma.feat.create({
         data: {
           aid: artistId,
-          sid: songId,
+          type: featType,
+          type_value: songId,
           position: position,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000)
@@ -43,7 +44,7 @@ export class FeatService {
       const featNamesList: TOutputFeatsNames[] = []
       const featIds = await this.prisma.feat.findMany({
         where: {
-          sid: songId
+          type_value: songId
         },
         select: {
           aid: true,

@@ -19,4 +19,7 @@ export class CreateArtistInput {
   @Field(() => String, { nullable: true })
   @MaxLength(32)
   altName: string;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  avatarFile: FileUpload
 }

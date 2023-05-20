@@ -15,20 +15,19 @@ export class FileManagerService {
     private readonly cdnFileManager: CdnFileManager,
   ){}
 
-  checkFileType = (fileName: string): TFileTypeCheckOutput => {
-    const fileType: string = fileName.match(/\.[a-zA-Z0-9]*/)[0]
-    if(Object.keys(soundTypes).includes(fileType)) {
+  checkFileType = (mimeType: string): TFileTypeCheckOutput => {    
+    if(soundTypes[mimeType]) {
       return {
-        mimeFileExtension: soundTypes[fileType],
+        mimeFileExtension: mimeType,
         fileType: 'song',
-        fileExtension: fileType
+        fileExtension: soundTypes[mimeType]
       }
     }
-    if(Object.keys(imageTypes).includes(fileType)) {
+    if(imageTypes[mimeType]) {
       return {
-        mimeFileExtension: imageTypes[fileType],
+        mimeFileExtension: mimeType,
         fileType: 'image',
-        fileExtension: fileType
+        fileExtension: imageTypes[mimeType]
       }
     }
     return null
@@ -36,10 +35,12 @@ export class FileManagerService {
 
   uploadFile = async(file: FileUpload, fileId: number): Promise<TUploadFileOutput> => {
     try {
-      const fileType: TFileTypeCheckOutput = this.checkFileType(file.filename)
+      const fileData = await this.localFileManager.waitFileUpload(file)
+      
+      const fileType: TFileTypeCheckOutput = this.checkFileType(fileData.mimetype)
       if(!fileType) throw new Error('неверный тип файла')
 
-      const localFilePath = await this.localFileManager.uploadFile(file.createReadStream, fileId.toString(), fileType.fileExtension)
+      const localFilePath = await this.localFileManager.uploadFile(fileData.createReadStream, fileType.toString(), fileType.fileExtension)
       if(!localFilePath) throw new Error('искаженный файл')
       
       const localFile = this.localFileManager.getFile(localFilePath, fileId + fileType.fileExtension, fileType.mimeFileExtension)
@@ -61,8 +62,9 @@ export class FileManagerService {
   }
 
   createFileManagerRecord = async(file: FileUpload, fileId: number): Promise<FileManager> => {
-    try {
+    try {      
       const CDNFilePath: TUploadFileOutput = await this.uploadFile(file, fileId)
+      
       return await this.prisma.fileManager.create({
         data: {
           type_value: fileId,

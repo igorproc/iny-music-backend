@@ -1,9 +1,9 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { FileUpload } from "@/dto/file-upload.dto";
 import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
+import { FileUpload } from "@/dto/file-upload.dto";
 
-@InputType("CreateSongInput")
-export class CreateSongInput {
+@InputType("NewSongFragment")
+export class NewSongFragment {
   @Field(() => Int)
   aid: number;
 
@@ -19,7 +19,7 @@ export class CreateSongInput {
   @Field(() => String)
   title: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   subtitle: string;
 
   @Field(() => Boolean)
@@ -29,11 +29,5 @@ export class CreateSongInput {
   duration: number;
 
   @Field(() => GraphQLUpload, { nullable: true })
-  song: FileUpload;
-
-  @Field(() => GraphQLUpload, { nullable: true })
-  largeImg: FileUpload;
-
-  @Field(() => GraphQLUpload, { nullable: true })
-  smallImg: FileUpload;
+  songFile: FileUpload;
 }

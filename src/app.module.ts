@@ -9,6 +9,7 @@ import { ArtistModule } from '@/artist/artist.module';
 import { SongModule } from '@/song/song.module';
 import { GenreModule } from '@/genre/genre.module';
 import { FileManagerModule } from '@/file-manager/file-manager.module';
+import { PlaylistModule } from './playlist/playlist.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env' }),
@@ -23,6 +24,7 @@ import { FileManagerModule } from '@/file-manager/file-manager.module';
     GenreModule,
     SongModule,
     FileManagerModule,
+    PlaylistModule,
   ],
   providers: [
     {
