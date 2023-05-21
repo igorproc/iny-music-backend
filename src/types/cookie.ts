@@ -1,0 +1,1 @@
+export const cookieMaxAge: number = 604800
