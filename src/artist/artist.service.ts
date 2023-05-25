@@ -1,8 +1,8 @@
+import { generateToken } from '@/utils/generate/token.util';
 import { PrismaService } from '@/prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Artist, FileManager } from '@prisma/client';
 import { CreateArtistInput } from './graphql/dto/create-artist.dto';
-import { FileUpload } from '@/dto/file-upload.dto';
 import { FileManagerService } from '@/file-manager/file-manager.service';
 
 @Injectable()
@@ -12,29 +12,24 @@ export class ArtistService {
     private readonly fileManager: FileManagerService
   ){}
 
-  async getAtrist(artistUid: number): Promise<Artist> {
+  async getAtristData(artistUid: number) {
     try {      
-      return await this.prisma.artist.findUnique({
+      const artistData = await this.prisma.artist.findUnique({
         where: {
           aid: artistUid
         }
       })
-    } catch {
-      throw new HttpException('Artist is wasnt found', HttpStatus.NOT_FOUND)
-    }
-  }
-
-  getArtistByAltName = async(altName: string): Promise<number> => {
-    try {
-      const artistId = await this.prisma.artist.findFirst({
-        where: {
-          alt_name: altName
-        },
-        select: {
-          aid: true
-        }
-      })
-      return artistId.aid
+      let artistImage: string = ''
+      if(artistData.avatar_id) {
+        const fileManagerData = await this.fileManager.getFileManagerRecordById(artistData.avatar_id)
+        artistImage = fileManagerData.path
+      }
+      return {
+        id: artistData.aid,
+        altName: artistData.alt_name,
+        artistImage,
+        shareToken: artistData.share_token,
+      }
     } catch {
       throw new HttpException('Artist is wasnt found', HttpStatus.NOT_FOUND)
     }
@@ -45,10 +40,11 @@ export class ArtistService {
       const artist = await this.prisma.artist.create({
         data: {
           owner_uid: artistData.ownerUid,
-          alt_name: artistData.altName,
+          alt_name: artistData.altName ? artistData.altName : `${artistData.name} ${artistData.surname}`,
           name: artistData.name,
           surname: artistData.surname,
           avatar_id: null,
+          share_token: generateToken(),
           verify: false,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000)

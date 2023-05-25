@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Artist {
-  aid        Int     @id @default(autoincrement())
-  owner_uid  Int
-  name       String  @db.VarChar(16)
-  surname    String  @db.VarChar(16)
-  alt_name   String? @db.VarChar(32)
-  verify     Boolean
-  avatar_id  Int?
-  updated_at Int
-  created_at Int
+  aid         Int     @id @default(autoincrement())
+  owner_uid   Int
+  name        String  @db.VarChar(16)
+  surname     String  @db.VarChar(16)
+  alt_name    String? @db.VarChar(32)
+  share_token String  @db.VarChar(128)
+  verify      Boolean
+  avatar_id   Int?
+  updated_at  Int
+  created_at  Int
 
   @@index([owner_uid], map: "owner_uid")
   @@map("artists")
@@ -107,8 +108,8 @@ model Likes {
 }
 
 model PlaylistContent {
-  pcid          Int @id @default(autoincrement())
-  pid           Int
+  pcid          Int  @id @default(autoincrement())
+  pid           Int?
   who_added_uid Int
   sid           Int
   updated_at    Int

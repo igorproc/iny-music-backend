@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({ credentials: true, origin: true, maxAge: cookieMaxAge });
   app.use(
     cookieParser(),
-    graphqlUploadExpress({ maxFileSize: 3e8, maxFiles: 30 })
+    graphqlUploadExpress({ maxFileSize: 3e50, maxFiles: 30 })
   );
   await app.listen(parseInt(process.env.APP_PORT) || 4001);
 }

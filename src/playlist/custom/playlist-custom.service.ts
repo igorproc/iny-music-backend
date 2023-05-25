@@ -33,7 +33,7 @@ export class PlaylistCustomService {
 
     if(playlistData.playlistImage) {
       const avatarFileManager = await this.fileManager.createFileManagerRecord(playlistData.playlistImage, playlist.pid)
-      this.prisma.playlist.update({
+      await this.prisma.playlist.update({
         where: { pid: playlist.pid },
         data: { avatar_id: avatarFileManager.fmid }
       })
@@ -46,7 +46,6 @@ export class PlaylistCustomService {
     })
 
     if(contentIsUploading) {
-      console.log(this.prisma.playlist.findFirst({ where: { pid: playlist.pid } }))
       return '123'
     }
   }

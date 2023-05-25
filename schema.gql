@@ -47,10 +47,10 @@ type GenreModel {
 }
 
 type ArtistOutputforSong {
-  id: ID
-  name: String
-  surname: String
-  altName: String
+  id: ID!
+  altName: String!
+  artistImage: String!
+  shareToken: String!
 }
 
 type FeatOutputforSong {
@@ -59,30 +59,30 @@ type FeatOutputforSong {
 }
 
 type SongDataFragment {
-  artist: ArtistOutputforSong
-  genres: [String!]
-  feats: [FeatOutputforSong!]
-  title: String
+  artist: ArtistOutputforSong!
+  genres: [String!]!
+  feats: [FeatOutputforSong!]!
+  title: String!
   subtitle: String
-  explicit: Boolean
-  duration: Int
+  explicit: Boolean!
+  duration: Int!
   songUrl: String
 }
 
 type AlbumData {
-  artistId: Int!
-  title: String!
+  typename: String!
+  artist: ArtistOutputforSong
+  title: String
   subtitle: String
+  shareToken: String
   albumLogo: String
   songs: [SongDataFragment!]!
+  createdAt: Int
 }
 
 type Query {
   """Find User By uid"""
   getUserByUid(id: Int!): UserModel!
-
-  """return artist data by artistId"""
-  getAtristById(atristId: Int!): ArtistModel!
 
   """Get All Genres List"""
   getAllGenreList: [GenreModel!]
@@ -106,6 +106,9 @@ type Mutation {
 
   """add new album (only artist)"""
   createNewAlbum(albumData: NewAlbumModel!): String
+
+  """upload song with album connect"""
+  uploadSong(playlistContentData: NewPlaylistContentData!): Int!
 }
 
 """input for input user data"""
@@ -149,13 +152,18 @@ input NewAlbumModel {
   title: String!
   subtitle: String
   albumImage: Upload!
-  featNames: [String!]
-  songs: [NewSongFragment!]
+  featIds: [Int!]
+  plalistContentIds: [Int!]!
+}
+
+input NewPlaylistContentData {
+  uid: Int!
+  song: NewSongFragment!
 }
 
 input NewSongFragment {
   aid: Int!
-  featsNames: [String!]
+  featsIds: [Int!]
   genresIds: [Int!]!
   ownerUid: Int!
   title: String!

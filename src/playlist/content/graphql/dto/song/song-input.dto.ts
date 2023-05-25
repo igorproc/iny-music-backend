@@ -7,8 +7,8 @@ export class NewSongFragment {
   @Field(() => Int)
   aid: number;
 
-  @Field(() => [String], { nullable: true })
-  featsNames: string[];
+  @Field(() => [Int], { nullable: true })
+  featsIds: number[];
 
   @Field(() => [Int])
   genresIds: number[];

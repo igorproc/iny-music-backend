@@ -10,12 +10,12 @@ export class FeatService {
     private readonly artist: ArtistService
   ){}
 
-  createFeatsRecord = async(featsName: string[], featType: string, typeValue: number): Promise<number> => {
+  createFeatsRecord = async(featsIds: number[], featType: string, typeValue: number): Promise<number> => {
     try {
-      featsName.forEach(async (artist) => {
-        const artistId = await this.artist.getArtistByAltName(artist)
-        await this.createFeatRecord(artistId, featsName.findIndex((featName) => featName === artist), featType, typeValue)
-      })
+      for(const artistId of featsIds) {
+        const artistData = await this.artist.getAtristData(artistId)
+        await this.createFeatRecord(artistData.id, featsIds.findIndex((featId) => featId === artistId), featType, typeValue)
+      }
       return typeValue
     } catch(error) {
       console.error(error)
@@ -52,8 +52,8 @@ export class FeatService {
         }
       })
       for(const featId of featIds) {        
-        const artistDataById = await this.artist.getAtrist(featId.aid)        
-        featNamesList.push({ name: artistDataById.alt_name, position: featId.position })
+        const artistDataById = await this.artist.getAtristData(featId.aid)        
+        featNamesList.push({ name: artistDataById.altName, position: featId.position })
       }
       return featNamesList
     } catch(error) {

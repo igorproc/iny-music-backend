@@ -14,7 +14,7 @@
       "@/*": ["src/*"],
       "@@/*": ["/"],
       "@decorators/*": ["src/decorators/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

@@ -4,25 +4,25 @@ import { FeatModelForSong } from "./feat-output.dto";
 
 @ObjectType("SongDataFragment")
 export class SongDataFragment {
-  @Field(() => ArtsistModelForSong, { nullable: true })
+  @Field(() => ArtsistModelForSong)
   artist: ArtsistModelForSong;
 
-  @Field(() => [String], { nullable: true })
+  @Field(() => [String],)
   genres: string[];
 
-  @Field(() => [FeatModelForSong], { nullable: true })
+  @Field(() => [FeatModelForSong],)
   feats: FeatModelForSong[];
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   title: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String,{ nullable: true })
   subtitle: string;
 
-  @Field(() => Boolean, { nullable: true })
+  @Field(() => Boolean)
   explicit: boolean;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => Int)
   duration: number;
 
   @Field(() => String, { nullable: true })

@@ -9,17 +9,6 @@ export class ArtistResolver {
   constructor( private readonly artistService: ArtistService ){}
 
   @Public()
-  @Query(
-    () => ArtistModel,
-    { description: "return artist data by artistId" }
-  )
-  async getAtristById(
-    @Args('atristId', { type: () => Int }) atristId: number
-  ): Promise<ArtistModel> {
-    return await this.artistService.getAtrist(atristId)
-  }
-
-  @Public()
   @Mutation(
     () => ArtistModel,
     { description: "create an artist" }

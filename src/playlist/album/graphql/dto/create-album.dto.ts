@@ -1,7 +1,6 @@
 import { FileUpload } from "@/dto/file-upload.dto";
 import { Field, InputType, Int } from "@nestjs/graphql";
 import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
-import { NewSongFragment } from "./song/song-input.dto";
 
 @InputType('NewAlbumModel')
 export class NewAlbumData {
@@ -20,9 +19,10 @@ export class NewAlbumData {
   @Field(() => GraphQLUpload)
   albumImage: FileUpload
 
-  @Field(() => [String], { nullable: true })
-  featNames: string[]
+  @Field(() => [Int], { nullable: true })
+  featIds: number[]
 
-  @Field(() => [NewSongFragment], { nullable: true })
-  songs: NewSongFragment[]
+  @Field(() => [Int])
+  plalistContentIds: number[]
+
 }
