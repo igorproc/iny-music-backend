@@ -1,6 +1,6 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ArtistModel } from '../dto/artist.dto';
-import { Public } from '@/decorators/isPublic.decorator';
+import Public from '@/decorators/isPublic.decorator';
 import { ArtistService } from '@/artist/artist.service';
 import { CreateArtistInput } from '../dto/create-artist.dto';
 import { Artist } from '@prisma/client';

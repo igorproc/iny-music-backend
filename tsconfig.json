@@ -13,7 +13,6 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["/"],
-      "@decorators/*": ["src/decorators/*"],
       "@utils/*": ["src/utils/*"]
     },
     "incremental": true,

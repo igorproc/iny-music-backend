@@ -1,8 +1,8 @@
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
-import { DeviceService } from "@/device/device.service";
-import { NewDeviceInput } from "@/device/graphql/dto/create-device.dto";
-import { IpAddress } from "@decorators/IpAddress.decorator";
-import { Public } from "@/decorators/isPublic.decorator";
+import { Args, Mutation, Resolver } from "@nestjs/graphql"
+import { DeviceService } from "@/device/device.service"
+import { NewDeviceInput } from "@/device/graphql/dto/create-device.dto"
+import IpAddress from "@/decorators/ipAddress.decorator"
+import Public from "@/decorators/isPublic.decorator"
 
 @Resolver(() => String)
 export class DeviceResolver {

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: db_backend
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_root_password
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - ./data:/var/lib/mysql
+    restart: always
+    networks:
+      - traefik_network
+
+  phpmyadmin:
+    container_name: pma_backend
+    image: phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=your_root_password
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`pma-music-backend.local`)"
+      - "traefik.http.services.phpmyadmin.loadbalancer.server.port=80"
+    networks:
+      - traefik_network
+
+  nestjs:
+    container_name: backend_app
+    image: node:20
+
+    build:
+      context: .
+      args:
+        NODE_VERSION: 20
+        BUILD_MODE: ${BUILD_MODE}
+      dockerfile: Dockerfile
+    working_dir: /nestjs
+    command: npm run start:dev
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nestjs.rule=Host(`music-backend.local`)
+      - traefik.http.services.nestjs.loadbalancer.server.port=${APP_PORT}
+    networks:
+      - traefik_network
+    depends_on:
+      - phpmyadmin
+
+networks:
+  traefik_network:
+    external: true

@@ -5,7 +5,7 @@ import { UserModel } from "@/user/graphql/dto/user.dto";
 import { RegisterUser } from "@/user/graphql/dto/create-user.dto";
 import { UserLogin } from "@/user/graphql/dto/login-user.dto";
 import { TAuthPayload } from '@/user/auth/types/auth.types';
-import { Public } from '@/decorators/isPublic.decorator';
+import Public from '@/decorators/isPublic.decorator';
 
 @Resolver (() => UserModel)
 export class UserResolver {

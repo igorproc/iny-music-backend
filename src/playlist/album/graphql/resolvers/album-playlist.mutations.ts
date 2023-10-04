@@ -1,4 +1,4 @@
-import { Public } from '@/decorators/isPublic.decorator';
+import Public from '@/decorators/isPublic.decorator';
 import { NewAlbumData } from './../dto/create-album.dto';
 import { PlaylistAlbumService } from '@/playlist/album/playlist-album.service';
 import { Args, Int, Mutation, Resolver } from "@nestjs/graphql";
