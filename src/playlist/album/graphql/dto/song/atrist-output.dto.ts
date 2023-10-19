@@ -1,16 +1,16 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 
-@ObjectType("ArtistOutputforSong")
+@ObjectType('ArtistOutputforSong')
 export class ArtsistModelForSong {
   @Field(() => ID)
-  id: number;
+  id: number
 
   @Field(() => String)
-  altName: string;
+  altName: string
 
   @Field(() => String)
-  artistImage: string;
+  artistImage: string
 
   @Field(() => String)
-  shareToken: string;
+  shareToken: string
 }

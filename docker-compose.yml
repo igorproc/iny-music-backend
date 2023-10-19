@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - data:/var/lib/mysql
+      - ./dev/mariadb:/docker-entrypoint-initdb.d
+    networks:
+      - db_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mariadb
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.phpmyadmin.service=phpmyadmin@docker
+      - traefik.http.routers.phpmyadmin.rule=Host(`${PMA_URL}`)
+      - traefik.http.services.phpmyadmin.loadbalancer.server.port=80
+      - traefik.http.routers.phpmyadmin.entrypoints=web
+      - traefik.docker.network=network
+    networks:
+      - db_network
+      - traefik_network
+    depends_on:
+      mariadb:
+        condition: service_started
+
+  app:
+    image: node:20
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_PORT: ${APP_PORT}
+    volumes:
+      - .:/app
+    command: ['sh', './Docker/script/start-prod.sh']
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.app.service=app@docker
+      - traefik.http.routers.app.rule=Host(`${APP_URL}`)
+      - traefik.http.services.app.loadbalancer.server.port=${APP_PORT}
+      - traefik.http.routers.app.entrypoints=web
+      - traefik.docker.network=network
+    networks:
+      - db_network
+      - traefik_network
+
+networks:
+  traefik_network:
+    external:
+      name: network
+  db_network:
+    driver: bridge
+    name: "db_music_nestjs_network"
+
+volumes:
+  data:

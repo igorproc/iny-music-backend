@@ -1,43 +1,45 @@
-import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
-import { Genre } from '@prisma/client';
-import axios from 'axios';
+import { PrismaService } from '@/prisma/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { Genre } from '@prisma/client'
+import axios from 'axios'
 
 @Injectable()
 export class GenreService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
-  getAllGenreList = async(): Promise<Genre[]> => {
+  getAllGenreList = async (): Promise<Genre[]> => {
     try {
       return await this.prisma.genre.findMany()
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }
 
-  fillGenreList = async(): Promise<void> => {
+  fillGenreList = async (): Promise<void> => {
     try {
-      const genresList = await axios.get<string[]>('https://raw.githubusercontent.com/voltraco/genres/master/genres.json')
-      for(const genreTitle of genresList.data) {
+      const genresList = await axios.get<string[]>(
+        'https://raw.githubusercontent.com/voltraco/genres/master/genres.json',
+      )
+      for (const genreTitle of genresList.data) {
         await this.prisma.genre.create({
           data: {
-            title: genreTitle
-          }
+            title: genreTitle,
+          },
         })
       }
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }
 
-  getGenreById = async(gid: number): Promise<Genre> => {
+  getGenreById = async (gid: number): Promise<Genre> => {
     try {
       return await this.prisma.genre.findUnique({
         where: {
-          gid
-        }
+          gid,
+        },
       })
-    } catch(error) {
+    } catch (error) {
       console.error(error)
     }
   }

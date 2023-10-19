@@ -1,4 +1,4 @@
 export type TOutputFeatsNames = {
-  name: string;
-  position: number;
+  name: string
+  position: number
 }

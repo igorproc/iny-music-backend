@@ -1,4 +1,4 @@
 export type DeclarateGenreModel = {
-  gsid: number;
-  gidList: number[];
+  gsid: number
+  gidList: number[]
 }

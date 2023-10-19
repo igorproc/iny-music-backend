@@ -1,10 +1,10 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 
-@ObjectType({ description: "Genre" })
+@ObjectType({ description: 'Genre' })
 export class GenreModel {
   @Field(() => ID)
-  readonly gid: number;
+  readonly gid: number
 
   @Field(() => String)
-  title: string;
+  title: string
 }

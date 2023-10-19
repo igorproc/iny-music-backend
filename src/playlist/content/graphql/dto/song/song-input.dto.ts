@@ -1,33 +1,33 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
-import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
-import { FileUpload } from "@/dto/file-upload.dto";
+import { Field, InputType, Int } from '@nestjs/graphql'
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
+import { FileUpload } from '@/dto/file-upload.dto'
 
-@InputType("NewSongFragment")
+@InputType('NewSongFragment')
 export class NewSongFragment {
   @Field(() => Int)
-  aid: number;
-
-  @Field(() => [Int], { nullable: true })
-  featsIds: number[];
+  aid: number
 
   @Field(() => [Int])
-  genresIds: number[];
+  genresIds: number[]
 
   @Field(() => Int)
-  ownerUid: number;
+  ownerUid: number
 
   @Field(() => String)
-  title: string;
+  title: string
 
   @Field(() => String, { nullable: true })
-  subtitle: string;
+  subtitle: string
 
   @Field(() => Boolean)
-  explicit: boolean;
+  explicit: boolean
+
+  @Field(() => [Int], { nullable: true })
+  featIds: number[]
 
   @Field(() => Int)
-  duration: number;
+  duration: number
 
   @Field(() => GraphQLUpload, { nullable: true })
-  songFile: FileUpload;
+  songFile: FileUpload
 }

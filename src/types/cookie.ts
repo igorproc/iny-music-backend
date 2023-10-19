@@ -1,1 +1,1 @@
-export const cookieMaxAge: number = 604800
+export const COOKIE_MAX_AGE = 604800

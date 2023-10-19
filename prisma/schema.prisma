@@ -2,18 +2,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
+datasource userData {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("PRISMA_CONNECT_DB_URL")
 }
 
 model Artist {
   aid         Int     @id @default(autoincrement())
   owner_uid   Int
-  name        String  @db.VarChar(16)
-  surname     String  @db.VarChar(16)
-  alt_name    String? @db.VarChar(32)
-  share_token String  @db.VarChar(128)
+  name        String  @userData.VarChar(16)
+  surname     String  @userData.VarChar(16)
+  alt_name    String? @userData.VarChar(32)
+  share_token String  @userData.VarChar(64)
   verify      Boolean
   avatar_id   Int?
   updated_at  Int
@@ -25,15 +25,15 @@ model Artist {
 
 model Application {
   app_id            Int                 @id @default(autoincrement())
-  title             String              @db.VarChar(64)
+  title             String              @userData.VarChar(64)
   is_verified       Boolean             @default(true)
   owner_uid         Int
-  secure_key        String              @db.VarChar(256)
-  access_key        String              @db.VarChar(256)
+  secure_key        String              @userData.VarChar(256)
+  access_key        String              @userData.VarChar(256)
   status            applications_status @default(disabled)
-  access_permission String              @db.VarChar(512)
-  domain            String              @db.VarChar(64)
-  redirect_uri      String              @db.VarChar(64)
+  access_permission String              @userData.VarChar(512)
+  domain            String              @userData.VarChar(64)
+  redirect_uri      String              @userData.VarChar(64)
   created_at        Int
 
   @@index([owner_uid], map: "owner_uid")
@@ -43,10 +43,10 @@ model Application {
 model Device {
   id         Int                @id @default(autoincrement())
   app_id     Int
-  client_id  String             @unique(map: "client_id") @db.VarChar(36)
+  client_id  String             @unique(map: "client_id") @userData.VarChar(36)
   uid        Int?
-  ip         String             @db.VarChar(16)
-  platform   String             @db.VarChar(128)
+  ip         String             @userData.VarChar(16)
+  platform   String             @userData.VarChar(128)
   permission devices_permission
   updated_at Int
   created_at Int
@@ -74,7 +74,7 @@ model FileManager {
   fmid       Int     @id @default(autoincrement())
   type_value Int?
   type       String
-  path       String? @db.VarChar(512)
+  path       String? @userData.VarChar(512)
 
   @@index([type_value], map: "type_value")
   @@map("filemanager")
@@ -82,7 +82,7 @@ model FileManager {
 
 model Genre {
   gid   Int    @id @default(autoincrement())
-  title String @db.VarChar(64)
+  title String @userData.VarChar(64)
 
   @@map("genre")
 }
@@ -141,10 +141,10 @@ model Playlist {
   aid         Int
   fid         Int?
   is_private  Boolean
-  title       String  @db.VarChar(64)
-  subtitle    String? @db.VarChar(32)
+  title       String  @userData.VarChar(64)
+  subtitle    String? @userData.VarChar(32)
   avatar_id   Int
-  share_token String  @unique(map: "share_token") @db.VarChar(128)
+  share_token String  @unique(map: "share_token") @userData.VarChar(128)
   updated_at  Int
   created_at  Int
 
@@ -161,8 +161,8 @@ model Song {
   gsid            Int?
   file_manager_id Int
   owner_uid       Int
-  title           String  @db.VarChar(64)
-  subtitle        String? @db.VarChar(32)
+  title           String  @userData.VarChar(64)
+  subtitle        String? @userData.VarChar(32)
   explicit        Boolean
   duration        Int
   updated_at      Int
@@ -187,15 +187,15 @@ model UserPlayerSetting {
 
 model User {
   uid        Int     @id @default(autoincrement())
-  username   String  @unique(map: "username") @db.VarChar(32)
-  password   String  @db.VarChar(256)
-  name       String  @db.VarChar(16)
-  surname    String  @db.VarChar(16)
-  platform   String  @db.VarChar(128)
+  username   String  @unique(map: "username") @userData.VarChar(32)
+  password   String  @userData.VarChar(256)
+  name       String  @userData.VarChar(16)
+  surname    String  @userData.VarChar(16)
+  platform   String  @userData.VarChar(128)
   gender     String
   birthday   Int
-  phone      String  @unique(map: "phone") @db.VarChar(18)
-  email      String  @unique(map: "email") @db.VarChar(320)
+  phone      String  @unique(map: "phone") @userData.VarChar(18)
+  email      String  @unique(map: "email") @userData.VarChar(320)
   role       String
   blocking   String?
   avatar_id  Int?

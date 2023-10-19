@@ -1,6 +1,6 @@
-import { FileUpload } from "@/dto/file-upload.dto";
-import { Field, InputType, Int } from "@nestjs/graphql";
-import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
+import { FileUpload } from '@/dto/file-upload.dto'
+import { Field, InputType, Int } from '@nestjs/graphql'
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 
 @InputType('NewAlbumModel')
 export class NewAlbumData {
@@ -24,5 +24,4 @@ export class NewAlbumData {
 
   @Field(() => [Int])
   plalistContentIds: number[]
-
 }

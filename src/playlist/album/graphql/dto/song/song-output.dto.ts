@@ -1,30 +1,30 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
-import { ArtsistModelForSong } from "./atrist-output.dto";
-import { FeatModelForSong } from "./feat-output.dto";
+import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { ArtsistModelForSong } from './atrist-output.dto'
+import { FeatModelForSong } from './feat-output.dto'
 
-@ObjectType("SongDataFragment")
+@ObjectType('SongDataFragment')
 export class SongDataFragment {
   @Field(() => ArtsistModelForSong)
-  artist: ArtsistModelForSong;
+  artist: ArtsistModelForSong
 
-  @Field(() => [String],)
-  genres: string[];
+  @Field(() => [String])
+  genres: string[]
 
-  @Field(() => [FeatModelForSong],)
-  feats: FeatModelForSong[];
+  @Field(() => [FeatModelForSong])
+  feats: FeatModelForSong[]
 
   @Field(() => String)
-  title: string;
-
-  @Field(() => String,{ nullable: true })
-  subtitle: string;
-
-  @Field(() => Boolean)
-  explicit: boolean;
-
-  @Field(() => Int)
-  duration: number;
+  title: string
 
   @Field(() => String, { nullable: true })
-  songUrl: string;
+  subtitle: string
+
+  @Field(() => Boolean)
+  explicit: boolean
+
+  @Field(() => Int)
+  duration: number
+
+  @Field(() => String, { nullable: true })
+  songUrl: string
 }

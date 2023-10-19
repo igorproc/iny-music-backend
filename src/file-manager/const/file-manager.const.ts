@@ -3,7 +3,7 @@ export const soundTypes = {
   'audio/x-flac': '.flac',
   'audio/wav': '.wav',
   'audio/x-ms-wma': '.wma',
-  'audio/aac': '.aac'
+  'audio/aac': '.aac',
 }
 
 export const imageTypes = {

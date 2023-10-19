@@ -1,12 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common'
 import { File } from '@web-std/file'
-import { createWriteStream, readFileSync, unlinkSync } from 'fs';
-import { FileUpload } from '@/dto/file-upload.dto';
+import { createWriteStream, readFileSync, unlinkSync } from 'fs'
+import { FileUpload } from '@/dto/file-upload.dto'
 
 @Injectable()
 export class LocalFileManagerService {
-
-  uploadFile = async(createReadStream, fileName: string, fileType: string): Promise<string> => {
+  uploadFile = async (createReadStream, fileName: string, fileType: string): Promise<string> => {
     return new Promise((resolve) => {
       const fileLocalPath = `./uploads/${fileName}${fileType}`
       createReadStream()
@@ -20,8 +19,7 @@ export class LocalFileManagerService {
   getFile = (filePath: string, fileName: string, fileType: string) => {
     try {
       const fileBuffer = readFileSync(filePath)
-      const file = new File([fileBuffer], fileName, { type: fileType })
-      return file
+      return new File([fileBuffer], fileName, { type: fileType })
     } catch (error) {
       console.log(error)
     }
@@ -31,14 +29,14 @@ export class LocalFileManagerService {
     try {
       unlinkSync(filePath)
       return true
-    } catch(error) {
+    } catch (error) {
       console.log(error)
     }
   }
 
   async waitFileUpload(file): Promise<FileUpload> {
     const isPromise = Boolean(file && typeof file.then === 'function')
-    if(!isPromise) return file
+    if (!isPromise) return file
 
     return new Promise((resolve) => {
       file.then((fileData) => resolve(fileData))

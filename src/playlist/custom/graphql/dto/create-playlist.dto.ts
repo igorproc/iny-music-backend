@@ -1,8 +1,8 @@
-import { FileUpload } from "@/dto/file-upload.dto";
-import { Field, InputType, Int } from "@nestjs/graphql";
-import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
+import { FileUpload } from '@/dto/file-upload.dto'
+import { Field, InputType, Int } from '@nestjs/graphql'
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
 
-@InputType("NewCustomPlaylistInput")
+@InputType('NewCustomPlaylistInput')
 export class NewCustomPlaylistInput {
   @Field(() => Int)
   uid: number

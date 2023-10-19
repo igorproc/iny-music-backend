@@ -1,22 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "@/prisma/prisma.service";
-import { SongService } from "@/song/song.service";
-import { NewPlaylistContentData } from './graphql/dto/create-playlist-content.dto';
-import { SongDataFragment } from './../album/graphql/dto/song/song-output.dto';
-import { TCustomPlaylistData } from './types/playlist-content';
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '@/prisma/prisma.service'
+import { SongService } from '@/song/song.service'
+import { NewPlaylistContentData } from './graphql/dto/create-playlist-content.dto'
+import { SongDataFragment } from './../album/graphql/dto/song/song-output.dto'
+import { TCustomPlaylistData } from './types/playlist-content'
 
 @Injectable()
 export class PlaylistContentService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly song: SongService,
-  ){}
+  constructor(private readonly prisma: PrismaService, private readonly song: SongService) {}
 
   async createAlbumContent(playlistContentData: NewPlaylistContentData): Promise<number> {
-    try {      
+    try {
       const songId = await this.song.createSong(playlistContentData.song)
 
-      if(!songId) throw new Error('SongUploadError')
+      if (!songId) {
+        throw new Error('SongUploadError')
+      }
 
       const playlistContent = await this.prisma.playlistContent.create({
         data: {
@@ -25,33 +24,35 @@ export class PlaylistContentService {
           sid: songId,
           created_at: Math.floor(Date.now() / 1000),
           updated_at: Math.floor(Date.now() / 1000),
-        }
+        },
       })
 
-      if(!playlistContent) throw new Error('AlbumContentError')
+      if (!playlistContent) {
+        throw new Error('AlbumContentError')
+      }
 
       return playlistContent.pcid
-    } catch(error) {
+    } catch (error) {
       throw new Error(error)
     }
   }
 
   async createCustomContent(playlistConentData: TCustomPlaylistData): Promise<boolean> {
     try {
-      for(const songId of playlistConentData.songsIds) {
+      for (const songId of playlistConentData.songsIds) {
         await this.prisma.playlistContent.create({
           data: {
             pid: playlistConentData.pid,
             who_added_uid: playlistConentData.uid,
             sid: songId,
             created_at: Math.floor(Date.now() / 1000),
-            updated_at: Math.floor(Date.now() / 1000)
-          }
+            updated_at: Math.floor(Date.now() / 1000),
+          },
         })
       }
 
       return true
-    } catch(error) {
+    } catch (error) {
       throw new Error(error)
     }
   }
@@ -62,11 +63,11 @@ export class PlaylistContentService {
       const songsData = []
       for (const songId of songIds) {
         const songData = await this.song.getSongBySid(songId.sid)
-        if(songData) songsData.push(songData)
+        if (songData) songsData.push(songData)
       }
-  
-      if(songsData.length) return songsData
-    } catch(error) {
+
+      if (songsData.length) return songsData
+    } catch (error) {
       throw new Error(error)
     }
   }
@@ -75,9 +76,9 @@ export class PlaylistContentService {
     try {
       await this.prisma.playlistContent.update({
         where: { pcid: playlistContentId },
-        data: { pid: playlistId }
+        data: { pid: playlistId },
       })
-    } catch(error) {
+    } catch (error) {
       throw new Error(error)
     }
   }
@@ -85,9 +86,9 @@ export class PlaylistContentService {
   async deletePlaylistContentRecord(playlistContentId: number): Promise<void> {
     try {
       await this.prisma.playlistContent.delete({
-        where: { pcid: playlistContentId }
+        where: { pcid: playlistContentId },
       })
-    } catch(error) {
+    } catch (error) {
       throw new Error(error)
     }
   }

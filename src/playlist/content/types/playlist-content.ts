@@ -1,5 +1,5 @@
 export type TCustomPlaylistData = {
   uid: number
-  pid: number,
+  pid: number
   songsIds: number[]
 }

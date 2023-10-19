@@ -1,8 +1,8 @@
-import { ArtsistModelForSong } from './song/atrist-output.dto';
-import { SongDataFragment } from './song/song-output.dto';
-import { Field, ObjectType, Int } from "@nestjs/graphql";
+import { ArtsistModelForSong } from './song/atrist-output.dto'
+import { SongDataFragment } from './song/song-output.dto'
+import { Field, ObjectType, Int } from '@nestjs/graphql'
 
-@ObjectType("AlbumData")
+@ObjectType('AlbumData')
 export class AlbumDataOutput {
   @Field(() => String)
   typename: string

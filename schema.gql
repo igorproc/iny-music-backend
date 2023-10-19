@@ -27,6 +27,11 @@ enum UserRole {
   manager
 }
 
+"""Device"""
+type DeviceModel {
+  clientId: String
+}
+
 """Atrist"""
 type ArtistModel {
   aid: ID!
@@ -99,7 +104,7 @@ type Mutation {
   loginUser(loginData: UserLogin!): UserModel
 
   """Declarate a new device"""
-  createUserDevice(deviceData: NewDeviceInput!): String
+  createUserDevice(deviceData: NewDeviceInput!): DeviceModel
 
   """create an artist"""
   createArtist(artistInput: CreateArtistInput!): ArtistModel!
@@ -163,12 +168,12 @@ input NewPlaylistContentData {
 
 input NewSongFragment {
   aid: Int!
-  featsIds: [Int!]
   genresIds: [Int!]!
   ownerUid: Int!
   title: String!
   subtitle: String
   explicit: Boolean!
+  featIds: [Int!]
   duration: Int!
   songFile: Upload
 }
