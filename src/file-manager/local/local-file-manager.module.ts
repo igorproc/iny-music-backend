@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { LocalFileManagerService } from "./local-file-manager.service";
+import { Module } from '@nestjs/common'
+import { LocalFileManagerService } from './local-file-manager.service'
 
 @Module({
   providers: [LocalFileManagerService],
-  exports: [LocalFileManagerService]
+  exports: [LocalFileManagerService],
 })
-export class LocalFileManagerModule{}
+export class LocalFileManagerModule {}

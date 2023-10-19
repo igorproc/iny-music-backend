@@ -1,15 +1,10 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from 'express';
-import { JWT_SECRET_KEY } from "./const/auth.const";
-import { IS_PUBLIC_KEY } from "@/decorators/isPublic.decorator";
-import { GqlExecutionContext } from "@nestjs/graphql";
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common'
+import { Reflector } from '@nestjs/core'
+import { JwtService } from '@nestjs/jwt'
+import { Request } from 'express'
+import { JWT_SECRET_KEY } from './const/auth.const'
+import { IS_PUBLIC_KEY } from '@/decorators/isPublic.decorator'
+import { GqlExecutionContext } from '@nestjs/graphql'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,11 +12,8 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context)
-    
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      ctx.getHandler(),
-      ctx.getClass(),
-    ]);    
+
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [ctx.getHandler(), ctx.getClass()])
     if (isPublic) {
       return true
     }
@@ -35,14 +27,14 @@ export class AuthGuard implements CanActivate {
     try {
       request['user'] = await this.jwtService.verifyAsync(token, {
         secret: JWT_SECRET_KEY,
-      });
+      })
     } catch {
       throw new UnauthorizedException()
     }
-    return true;
+    return true
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {      
+  private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.cookies['Authorization']?.split(' ') ?? []
     return type === 'Bearer' ? token : undefined
   }

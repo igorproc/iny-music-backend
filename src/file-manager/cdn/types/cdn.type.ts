@@ -1,4 +1,4 @@
 export type TCDNData = {
-  code: number;
-  path: string;
+  code: number
+  path: string
 }

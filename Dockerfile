@@ -1,20 +1,16 @@
-ARG NODE_VERSION
-ARG BUILD_MODE
+ARG APP_PORT
+FROM node:20
 
-FROM node:${NODE_VERSION}
+WORKDIR /app
 
-WORKDIR /nestjs
-
-COPY configs/.env.local .env
-
-COPY package.json package.json
-COPY package-lock.json package-lock.json
+COPY package*.json ./
 
 RUN npm ci
 
 COPY . .
 
-RUN npx prisma generate
-RUN npx prisma db push
+RUN chmod +x ./start-prod.sh
 
-CMD ["npm", "run", "start:dev"]
+EXPOSE ${APP_PORT}
+
+CMD ["sh", "./start-prod.sh"]

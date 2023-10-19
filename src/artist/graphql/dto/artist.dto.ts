@@ -1,35 +1,35 @@
-import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
-import { MaxLength } from "class-validator";
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql'
+import { MaxLength } from 'class-validator'
 
-@ObjectType({ description: "Atrist" })
+@ObjectType({ description: 'Atrist' })
 export class ArtistModel {
   @Field(() => ID)
-  readonly aid: number;
+  readonly aid: number
 
   @Field(() => Int)
-  owner_uid: number;
+  owner_uid: number
 
   @Field(() => String)
   @MaxLength(16)
-  name: string;
+  name: string
 
   @Field(() => String)
   @MaxLength(16)
-  surname: string;
+  surname: string
 
   @Field(() => String, { nullable: true })
   @MaxLength(32)
-  alt_name: string;
+  alt_name: string
 
   @Field(() => Boolean)
-  verify: boolean;
+  verify: boolean
 
   @Field(() => Int, { nullable: true })
-  avatar_id: number;
+  avatar_id: number
 
   @Field(() => Int)
-  updated_at: number;
+  updated_at: number
 
   @Field(() => Int)
-  created_at: number;
+  created_at: number
 }

@@ -1,11 +1,11 @@
-import { PlaylistContentService } from '@/playlist/content/playlist-content.service';
-import { FeatService } from '@/feat/feat.service';
-import { FileManagerService } from '@/file-manager/file-manager.service';
-import { NewAlbumData } from './graphql/dto/create-album.dto';
-import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from "@nestjs/common";
-import { playlistType } from '../graphql/playlist-enums';
-import { generateToken } from '@/utils/generate/token.util';
+import { PlaylistContentService } from '@/playlist/content/playlist-content.service'
+import { FeatService } from '@/feat/feat.service'
+import { FileManagerService } from '@/file-manager/file-manager.service'
+import { NewAlbumData } from './graphql/dto/create-album.dto'
+import { PrismaService } from '@/prisma/prisma.service'
+import { Injectable } from '@nestjs/common'
+import { playlistType } from '../graphql/playlist-enums'
+import { generateToken } from '@/utils/generate/token.util'
 
 @Injectable()
 export class PlaylistAlbumService {
@@ -13,8 +13,8 @@ export class PlaylistAlbumService {
     private readonly prisma: PrismaService,
     private readonly fileManager: FileManagerService,
     private readonly feat: FeatService,
-    private readonly playlistContent: PlaylistContentService
-  ){}
+    private readonly playlistContent: PlaylistContentService,
+  ) {}
 
   async createAlbum(albumData: NewAlbumData): Promise<string> {
     let featId: number = null
@@ -30,8 +30,8 @@ export class PlaylistAlbumService {
         subtitle: albumData.subtitle ? albumData.subtitle : null,
         share_token: generateToken(),
         created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000)
-      }
+        updated_at: Math.floor(Date.now() / 1000),
+      },
     })
 
     const albumImageIsUpload = await this.fileManager.createFileManagerRecord(albumData.albumImage, playlistData.pid)
@@ -39,24 +39,24 @@ export class PlaylistAlbumService {
     const contentIsUpload = await this.playlistContent.createAlbumContent({
       pid: playlistData.pid,
       uid: albumData.uid,
-      songs: albumData.songs
+      songs: albumData.songs,
     })
 
-    if(albumData.featNames) {
+    if (albumData.featNames) {
       featId = await this.feat.createFeatsRecord(albumData.featNames, 'album', playlistData.pid)
     }
 
     const playlistUpdate = await this.prisma.playlist.update({
       where: {
-        pid: playlistData.pid
+        pid: playlistData.pid,
       },
       data: {
         fid: featId,
-        avatar_id: albumImageIsUpload.fmid
-      }
+        avatar_id: albumImageIsUpload.fmid,
+      },
     })
 
-    if(playlistUpdate && contentIsUpload) {
+    if (playlistUpdate && contentIsUpload) {
       console.log(playlistUpdate)
       return '123'
     }

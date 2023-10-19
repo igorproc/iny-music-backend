@@ -1,32 +1,32 @@
-import { Field, Int, InputType } from "@nestjs/graphql";
-import { MaxLength } from "class-validator";
-import { UserGender } from "./user-enums";
+import { Field, Int, InputType } from '@nestjs/graphql'
+import { MaxLength } from 'class-validator'
+import { UserGender } from './user-enums'
 
 @InputType({ description: 'input for input user data' })
 export class RegisterUser {
   @Field(() => String)
   @MaxLength(320)
-  email: string;
+  email: string
 
   @Field(() => String)
   @MaxLength(256)
-  password: string;
+  password: string
 
   @Field(() => String)
   @MaxLength(16)
-  name: string;
+  name: string
 
   @Field(() => String)
   @MaxLength(16)
-  surname: string;
+  surname: string
 
   @Field(() => String)
-  gender: UserGender;
+  gender: UserGender
 
   @Field(() => Int)
-  birthday: number;
+  birthday: number
 
   @Field(() => String)
   @MaxLength(18)
-  phone: string;
+  phone: string
 }

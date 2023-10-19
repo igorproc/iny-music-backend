@@ -1,11 +1,11 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
-import { imageTypes, soundTypes } from './const/file-manager.const';
-import { FileManager } from '@prisma/client';
-import { FileUpload } from '@/dto/file-upload.dto';
-import { LocalFileManagerService } from './local/local-file-manager.service';
-import { CdnFileManager } from './cdn/cdn-file-manager.service';
-import { TFileTypeCheckOutput, TUploadFileOutput } from './types/file-manager.type';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { PrismaService } from '@/prisma/prisma.service'
+import { imageTypes, soundTypes } from './const/file-manager.const'
+import { FileManager } from '@prisma/client'
+import { FileUpload } from '@/dto/file-upload.dto'
+import { LocalFileManagerService } from './local/local-file-manager.service'
+import { CdnFileManager } from './cdn/cdn-file-manager.service'
+import { TFileTypeCheckOutput, TUploadFileOutput } from './types/file-manager.type'
 
 @Injectable()
 export class FileManagerService {
@@ -13,79 +13,97 @@ export class FileManagerService {
     private readonly prisma: PrismaService,
     private readonly localFileManager: LocalFileManagerService,
     private readonly cdnFileManager: CdnFileManager,
-  ){}
+  ) {}
 
-  checkFileType = (mimeType: string): TFileTypeCheckOutput => {    
-    if(soundTypes[mimeType]) {
+  checkFileType = (mimeType: string): TFileTypeCheckOutput => {
+    if (soundTypes[mimeType]) {
       return {
         mimeFileExtension: mimeType,
         fileType: 'song',
-        fileExtension: soundTypes[mimeType]
+        fileExtension: soundTypes[mimeType],
       }
     }
-    if(imageTypes[mimeType]) {
+    if (imageTypes[mimeType]) {
       return {
         mimeFileExtension: mimeType,
         fileType: 'image',
-        fileExtension: imageTypes[mimeType]
+        fileExtension: imageTypes[mimeType],
       }
     }
     return null
   }
 
-  uploadFile = async(file: FileUpload, fileId: number): Promise<TUploadFileOutput> => {
+  uploadFile = async (file: FileUpload, fileId: number): Promise<TUploadFileOutput> => {
     try {
       const fileData = await this.localFileManager.waitFileUpload(file)
-      
-      const fileType: TFileTypeCheckOutput = this.checkFileType(fileData.mimetype)
-      if(!fileType) throw new Error('неверный тип файла')
 
-      const localFilePath = await this.localFileManager.uploadFile(fileData.createReadStream, fileType.toString(), fileType.fileExtension)
-      if(!localFilePath) throw new Error('искаженный файл')
-      
-      const localFile = this.localFileManager.getFile(localFilePath, fileId + fileType.fileExtension, fileType.mimeFileExtension)
-      if(!localFile) throw new Error('ошибка сервера')
+      const fileType: TFileTypeCheckOutput = this.checkFileType(fileData.mimetype)
+      if (!fileType) {
+        throw new Error('Error file type')
+      }
+
+      const localFilePath = await this.localFileManager.uploadFile(
+        fileData.createReadStream,
+        fileType.toString(),
+        fileType.fileExtension,
+      )
+      if (!localFilePath) {
+        throw new Error('Bad file')
+      }
+
+      const localFile = this.localFileManager.getFile(
+        localFilePath,
+        fileId + fileType.fileExtension,
+        fileType.mimeFileExtension,
+      )
+      if (!localFile) {
+        throw new Error('server error')
+      }
 
       const CDNFilePath = await this.cdnFileManager.uploadFileToCDN(localFile)
-      if(!CDNFilePath) throw new Error('Ахтунг CDN поплыл!')
+      if (!CDNFilePath) {
+        throw new Error('Ахтунг CDN поплыл!')
+      }
 
       const localFileIsDelete = this.localFileManager.deleteFile(localFilePath)
-      if(!localFileIsDelete) throw new Error('0_0')
+      if (!localFileIsDelete) {
+        throw new Error('0_0')
+      }
 
       return {
         CDNFilePath,
-        fileType: fileType.fileType
+        fileType: fileType.fileType,
       }
-    } catch(error) {
+    } catch (error) {
       console.log(error)
     }
   }
 
-  createFileManagerRecord = async(file: FileUpload, fileId: number): Promise<FileManager> => {
-    try {      
+  createFileManagerRecord = async (file: FileUpload, fileId: number): Promise<FileManager> => {
+    try {
       const CDNFilePath: TUploadFileOutput = await this.uploadFile(file, fileId)
-      
+
       return await this.prisma.fileManager.create({
         data: {
           type_value: fileId,
-          type: CDNFilePath.fileType === 'song' ? 'song_id': 'image_id',
-          path: CDNFilePath.CDNFilePath
-        }
+          type: CDNFilePath.fileType === 'song' ? 'song_id' : 'image_id',
+          path: CDNFilePath.CDNFilePath,
+        },
       })
     } catch {
-      throw new HttpException('ошибка сервера', HttpStatus.SERVICE_UNAVAILABLE)
+      throw new HttpException('Server error', HttpStatus.SERVICE_UNAVAILABLE)
     }
   }
 
-  getFileManagerRecordById = async(id: number): Promise<FileManager> => {
+  getFileManagerRecordById = async (id: number): Promise<FileManager> => {
     try {
       return await this.prisma.fileManager.findFirst({
         where: {
-          fmid: id
-        }
+          fmid: id,
+        },
       })
     } catch {
-      throw new HttpException('записи с таким id не существует', HttpStatus.NOT_FOUND)
+      throw new HttpException('song is not found', HttpStatus.NOT_FOUND)
     }
   }
 }

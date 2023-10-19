@@ -1,7 +1,7 @@
-import { FileUpload } from "@/dto/file-upload.dto";
-import { Field, InputType, Int } from "@nestjs/graphql";
-import * as GraphQLUpload from "graphql-upload/GraphQLUpload.js"
-import { NewSongFragment } from "./song-input.dto";
+import { FileUpload } from '@/dto/file-upload.dto'
+import { Field, InputType, Int } from '@nestjs/graphql'
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js'
+import { NewSongFragment } from './song-input.dto'
 
 @InputType('NewAlbumModel')
 export class NewAlbumData {

@@ -1,29 +1,29 @@
-import { Field, Int, ObjectType, ID } from '@nestjs/graphql';
-import { UserGender, UserRole } from './user-enums';
+import { Field, Int, ObjectType, ID } from '@nestjs/graphql'
+import { UserGender, UserRole } from './user-enums'
 
 @ObjectType({ description: 'User' })
 export class UserModel {
   @Field(() => ID, { nullable: true })
-  uid: number;
+  uid: number
 
   @Field(() => String, { nullable: true })
-  username: string;
+  username: string
 
   @Field(() => UserGender, { nullable: true })
-  gender: string;
+  gender: string
 
   @Field(() => Int, { nullable: true })
-  birthday: number;
+  birthday: number
 
   @Field(() => String, { nullable: true })
-  phone: string;
+  phone: string
 
   @Field(() => String, { nullable: true })
-  avatarUrl?: string;
+  avatarUrl?: string
 
   @Field(() => String, { nullable: true })
-  email: string;
+  email: string
 
   @Field(() => UserRole, { nullable: true })
-  role: string;
+  role: string
 }
