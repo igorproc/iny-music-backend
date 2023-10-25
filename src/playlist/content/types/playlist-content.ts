@@ -1,6 +1,5 @@
-import { NewSongFragment } from '@/playlist/album/graphql/dto/song-input.dto'
-export type TAlbumContentData = {
+export type TCustomPlaylistData = {
   uid: number
   pid: number
-  songs: NewSongFragment[]
+  songsIds: number[]
 }

@@ -3,6 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { ApolloDriver } from '@nestjs/apollo'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
+import { S3Module } from 'nestjs-s3'
 
 import { UserModule } from '@/user/user.module'
 import { AuthGuard } from '@/user/auth/auth.guard'
@@ -21,6 +22,17 @@ import { PlaylistModule } from '@/playlist/playlist.module'
       autoSchemaFile: 'schema.gql',
       uploads: true,
       cors: { credentials: true, origin: true },
+    }),
+    S3Module.forRoot({
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY,
+          secretAccessKey: process.env.S3_PRIVATE_KEY,
+        },
+        region: process.env.S3_REGION,
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: true,
+      },
     }),
     UserModule,
     ArtistModule,

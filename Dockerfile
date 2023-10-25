@@ -9,8 +9,8 @@ RUN npm ci
 
 COPY . .
 
-RUN chmod +x ./start-prod.sh
+RUN chmod +x ./Docker/script/start-prod.sh
 
 EXPOSE ${APP_PORT}
 
-CMD ["sh", "./start-prod.sh"]
+CMD ["sh", "./Docker/script/start-prod.sh"]

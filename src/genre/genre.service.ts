@@ -15,18 +15,19 @@ export class GenreService {
     }
   }
 
-  fillGenreList = async (): Promise<void> => {
+  fillGenreList = async (): Promise<boolean> => {
     try {
       const genresList = await axios.get<string[]>(
         'https://raw.githubusercontent.com/voltraco/genres/master/genres.json',
       )
-      genresList.data.forEach(async (genreTitle) => {
+      for (const genreTitle of genresList.data) {
         await this.prisma.genre.create({
           data: {
             title: genreTitle,
           },
         })
-      })
+      }
+      return true
     } catch (error) {
       console.error(error)
     }
@@ -34,7 +35,7 @@ export class GenreService {
 
   getGenreById = async (gid: number): Promise<Genre> => {
     try {
-      return this.prisma.genre.findUnique({
+      return await this.prisma.genre.findUnique({
         where: {
           gid,
         },

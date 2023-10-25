@@ -1,27 +1,32 @@
 import { Injectable } from '@nestjs/common'
-import { File } from '@web-std/file'
-import { createWriteStream, readFileSync, unlinkSync } from 'fs'
+
+import { createWriteStream, createReadStream, unlinkSync } from 'fs'
 import { FileUpload } from '@/dto/file-upload.dto'
+import { generateToken } from '@utils/generate/token.util'
 
 @Injectable()
 export class LocalFileManagerService {
   uploadFile = async (createReadStream, fileName: string, fileType: string): Promise<string> => {
-    return new Promise((resolve) => {
+    try {
       const fileLocalPath = `./uploads/${fileName}${fileType}`
-      createReadStream()
-        .pipe(createWriteStream(fileLocalPath))
-        .on('finish', () => {
-          resolve(fileLocalPath)
-        })
-    })
+      const isLocalUploaded = await createReadStream().pipe(createWriteStream(fileLocalPath))
+      if (isLocalUploaded) {
+        return fileLocalPath
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
-  getFile = (filePath: string, fileName: string, fileType: string) => {
+  getFile = (filePath: string, fileName: string, fileExt: string) => {
     try {
-      const fileBuffer = readFileSync(filePath)
-      return new File([fileBuffer], fileName, { type: fileType })
+      const fileReadStream = createReadStream(filePath)
+      return {
+        fileReadStream,
+        fileName: `${fileName}${generateToken().slice(0, 5)}${fileExt}`,
+      }
     } catch (error) {
-      console.log(error)
+      throw new Error(error)
     }
   }
 
@@ -30,13 +35,18 @@ export class LocalFileManagerService {
       unlinkSync(filePath)
       return true
     } catch (error) {
-      console.log(error)
+      throw new Error(error)
     }
   }
 
   async waitFileUpload(file): Promise<FileUpload> {
-    return new Promise((resolve) => {
-      file.then((fileData) => resolve(fileData))
-    })
+    try {
+      const isPromise = Boolean(file && typeof file.then === 'function')
+      if (!isPromise) return file
+
+      return file.then((fileData) => fileData)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 }

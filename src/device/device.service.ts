@@ -33,7 +33,7 @@ export class DeviceService {
           updated_at: Math.floor(Date.now() / 1000),
         },
       })
-      return { clientId: userDevice.client_id, }
+      return { clientId: userDevice.client_id }
     } catch (error) {
       throw new HttpException('device is already write', HttpStatus.I_AM_A_TEAPOT)
     }
@@ -52,6 +52,18 @@ export class DeviceService {
       return !!deviceData
     } catch {
       throw new HttpException('device is not found', HttpStatus.I_AM_A_TEAPOT)
+    }
+  }
+
+  async removeUidFromUserDevice(cliendId: string, uid: number): Promise<boolean> {
+    try {
+      const deviceData = await this.prisma.device.update({
+        where: { client_id: cliendId },
+        data: { uid: null },
+      })
+      return !!deviceData
+    } catch (error) {
+      throw new HttpException('device is bot found', HttpStatus.OK)
     }
   }
 }

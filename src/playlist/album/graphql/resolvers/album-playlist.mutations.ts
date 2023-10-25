@@ -8,10 +8,7 @@ export class AlbumPlaylistMutationsResolver {
   constructor(private albumService: PlaylistAlbumService) {}
 
   @Public()
-  @Mutation(() => String, {
-    description: 'add new album (only artist)',
-    nullable: true,
-  })
+  @Mutation(() => String, { description: 'add new album (only artist)', nullable: true })
   async createNewAlbum(@Args('albumData', { type: () => NewAlbumData }) albumData: NewAlbumData): Promise<string> {
     return await this.albumService.createAlbum(albumData)
   }

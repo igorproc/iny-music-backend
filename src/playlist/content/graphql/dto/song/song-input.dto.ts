@@ -7,9 +7,6 @@ export class NewSongFragment {
   @Field(() => Int)
   aid: number
 
-  @Field(() => [String], { nullable: true })
-  featsNames: string[]
-
   @Field(() => [Int])
   genresIds: number[]
 
@@ -24,6 +21,9 @@ export class NewSongFragment {
 
   @Field(() => Boolean)
   explicit: boolean
+
+  @Field(() => [Int], { nullable: true })
+  featIds: number[]
 
   @Field(() => Int)
   duration: number

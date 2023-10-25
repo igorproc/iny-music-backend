@@ -45,7 +45,9 @@ services:
       dockerfile: Dockerfile
       args:
         APP_PORT: ${APP_PORT}
-    command: ['sh', 'start-prod.sh']
+    volumes:
+      - .:/app
+    command: ['sh', './Docker/script/start-prod.sh']
     labels:
       - traefik.enable=true
       - traefik.http.routers.app.service=app@docker

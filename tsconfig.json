@@ -13,7 +13,8 @@
     "paths": {
       "@/*": ["src/*"],
       "@@/*": ["/"],
-      "@utils/*": ["src/utils/*"]
+      "@decorators/*": ["src/decorators/*"],
+      "@utils/*": ["src/utils/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

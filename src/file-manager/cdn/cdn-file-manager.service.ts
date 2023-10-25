@@ -1,27 +1,28 @@
 import { Injectable } from '@nestjs/common'
-import axios from 'axios'
-import { CDNApiVersion, secretCDNKey } from './const/file-manager-cdn.const'
-import { TCDNData } from './types/cdn.type'
+import { InjectS3, S3 } from 'nestjs-s3'
+
+import * as process from 'process'
 
 @Injectable()
 export class CdnFileManager {
+  constructor(@InjectS3() private readonly s3: S3) {}
+
   uploadFileToCDN = async (file): Promise<string> => {
     try {
-      const formDataForUpload = new FormData()
-      formDataForUpload.append('file', file)
+      const fileIsUploaded = await this.s3.putObject({
+        Bucket: process.env.S3_BUCKKET,
+        Key: file.fileName,
+        Body: file.fileReadStream,
+        ACL: 'public-read',
+      })
 
-      const { data } = await axios.post<TCDNData>(
-        `http://cdn/api/method/file.imageUpload?v=${CDNApiVersion}&server-token=${secretCDNKey}`,
-        formDataForUpload,
-        { headers: { 'Content-Type': 'multipart/form-data' } },
-      )
-      if (data.code === 500) {
-        throw new Error('Ахтунг CDN поплыл!')
+      if (fileIsUploaded.$metadata.httpStatusCode !== 200) {
+        return
       }
-
-      return data.path
+      return `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKKET}/${file.fileName}`
     } catch (error) {
       console.error(error)
+      throw new Error(error)
     }
   }
 }
