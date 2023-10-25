@@ -13,11 +13,11 @@ model Artist {
   name        String  @userData.VarChar(16)
   surname     String  @userData.VarChar(16)
   alt_name    String? @userData.VarChar(32)
-  share_token String  @userData.VarChar(64)
   verify      Boolean
   avatar_id   Int?
   updated_at  Int
   created_at  Int
+  share_token String  @userData.VarChar(64)
 
   @@index([owner_uid], map: "owner_uid")
   @@map("artists")
@@ -73,7 +73,7 @@ model Feat {
 model FileManager {
   fmid       Int     @id @default(autoincrement())
   type_value Int?
-  type       String
+  type       String?
   path       String? @userData.VarChar(512)
 
   @@index([type_value], map: "type_value")

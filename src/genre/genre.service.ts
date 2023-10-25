@@ -15,7 +15,7 @@ export class GenreService {
     }
   }
 
-  fillGenreList = async (): Promise<void> => {
+  fillGenreList = async (): Promise<boolean> => {
     try {
       const genresList = await axios.get<string[]>(
         'https://raw.githubusercontent.com/voltraco/genres/master/genres.json',
@@ -27,6 +27,7 @@ export class GenreService {
           },
         })
       }
+      return true
     } catch (error) {
       console.error(error)
     }

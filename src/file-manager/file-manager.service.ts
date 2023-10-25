@@ -1,11 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
-import { PrismaService } from '@/prisma/prisma.service'
-import { imageTypes, soundTypes } from './const/file-manager.const'
 import { FileManager } from '@prisma/client'
-import { FileUpload } from '@/dto/file-upload.dto'
+
+import { PrismaService } from '@/prisma/prisma.service'
 import { LocalFileManagerService } from './local/local-file-manager.service'
 import { CdnFileManager } from './cdn/cdn-file-manager.service'
+
+import { imageTypes, soundTypes } from './const/file-manager.const'
 import { TFileTypeCheckOutput, TUploadFileOutput } from './types/file-manager.type'
+import { FileUpload } from '@/dto/file-upload.dto'
 
 @Injectable()
 export class FileManagerService {
@@ -16,21 +18,22 @@ export class FileManagerService {
   ) {}
 
   checkFileType = (mimeType: string): TFileTypeCheckOutput => {
-    if (soundTypes[mimeType]) {
-      return {
-        mimeFileExtension: mimeType,
-        fileType: 'song',
-        fileExtension: soundTypes[mimeType],
-      }
+    switch (true) {
+      case soundTypes[mimeType] !== undefined:
+        return {
+          mimeFileExtension: mimeType,
+          fileType: 'song',
+          fileExtension: soundTypes[mimeType],
+        }
+      case imageTypes[mimeType] !== undefined:
+        return {
+          mimeFileExtension: mimeType,
+          fileType: 'image',
+          fileExtension: imageTypes[mimeType],
+        }
+      default:
+        return null
     }
-    if (imageTypes[mimeType]) {
-      return {
-        mimeFileExtension: mimeType,
-        fileType: 'image',
-        fileExtension: imageTypes[mimeType],
-      }
-    }
-    return null
   }
 
   uploadFile = async (file: FileUpload, fileId: number): Promise<TUploadFileOutput> => {
@@ -39,35 +42,32 @@ export class FileManagerService {
 
       const fileType: TFileTypeCheckOutput = this.checkFileType(fileData.mimetype)
       if (!fileType) {
-        throw new Error('Error file type')
+        return
       }
 
       const localFilePath = await this.localFileManager.uploadFile(
         fileData.createReadStream,
-        fileType.toString(),
+        fileId.toString(),
         fileType.fileExtension,
       )
       if (!localFilePath) {
-        throw new Error('Bad file')
+        return
       }
 
-      const localFile = this.localFileManager.getFile(
-        localFilePath,
-        fileId + fileType.fileExtension,
-        fileType.mimeFileExtension,
-      )
+      const localFile = this.localFileManager.getFile(localFilePath, fileId.toString(), fileType.fileExtension)
+
       if (!localFile) {
-        throw new Error('server error')
+        return
       }
 
       const CDNFilePath = await this.cdnFileManager.uploadFileToCDN(localFile)
       if (!CDNFilePath) {
-        throw new Error('Ахтунг CDN поплыл!')
+        return
       }
 
       const localFileIsDelete = this.localFileManager.deleteFile(localFilePath)
       if (!localFileIsDelete) {
-        throw new Error('0_0')
+        return
       }
 
       return {
@@ -75,17 +75,31 @@ export class FileManagerService {
         fileType: fileType.fileType,
       }
     } catch (error) {
-      console.log(error)
+      throw new Error(error)
     }
   }
 
   createFileManagerRecord = async (file: FileUpload, fileId: number): Promise<FileManager> => {
     try {
-      const CDNFilePath: TUploadFileOutput = await this.uploadFile(file, fileId)
-
-      return await this.prisma.fileManager.create({
+      const fileManagerData = await this.prisma.fileManager.create({
         data: {
           type_value: fileId,
+        },
+      })
+      if (!fileManagerData) {
+        return
+      }
+
+      const CDNFilePath: TUploadFileOutput = await this.uploadFile(file, fileManagerData.fmid)
+      if (!CDNFilePath) {
+        await this.prisma.fileManager.deleteMany({
+          where: { fmid: fileManagerData.fmid },
+        })
+        return
+      }
+      return await this.prisma.fileManager.update({
+        where: { fmid: fileManagerData.fmid },
+        data: {
           type: CDNFilePath.fileType === 'song' ? 'song_id' : 'image_id',
           path: CDNFilePath.CDNFilePath,
         },

@@ -52,58 +52,66 @@ export class SongService {
   }
 
   async createSong(songData: NewSongFragment): Promise<number> {
-    const song: Song = await this.prisma.song.create({
-      data: {
-        aid: songData.aid,
-        fid: null,
-        gsid: null,
-        file_manager_id: 0,
-        owner_uid: songData.ownerUid,
-        title: songData.title,
-        subtitle: songData.subtitle ? songData.subtitle : null,
-        explicit: songData.explicit,
-        duration: songData.duration,
-        created_at: Math.floor(Date.now() / 1000),
-        updated_at: Math.floor(Date.now() / 1000),
-      },
-    })
+    try {
+      const song: Song = await this.prisma.song.create({
+        data: {
+          aid: songData.aid,
+          fid: null,
+          gsid: null,
+          file_manager_id: 0,
+          owner_uid: songData.ownerUid,
+          title: songData.title,
+          subtitle: songData.subtitle ? songData.subtitle : null,
+          explicit: songData.explicit,
+          duration: songData.duration,
+          created_at: Math.floor(Date.now() / 1000),
+          updated_at: Math.floor(Date.now() / 1000),
+        },
+      })
 
-    const genresDeclarateStatus: number = await this.genres.declarateMusicGenre({
-      gsid: song.sid,
-      gidList: songData.genresIds,
-    })
-    const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(songData.songFile, song.sid)
-    let featId: number = null
-    if (songData.featIds && songData.featIds.length) {
-      featId = await this.feat.createFeatsRecord(songData.featIds, 'song', song.sid)
+      const genresDeclarateStatus: number = await this.genres.declarateMusicGenre({
+        gsid: song.sid,
+        gidList: songData.genresIds,
+      })
+      const uploadFilePath: FileManager = await this.fileManager.createFileManagerRecord(songData.songFile, song.sid)
+      let featId: number = null
+      if (songData.featIds && songData.featIds.length) {
+        featId = await this.feat.createFeatsRecord(songData.featIds, 'song', song.sid)
+      }
+
+      await this.prisma.song.update({
+        where: {
+          sid: song.sid,
+        },
+        data: {
+          gsid: genresDeclarateStatus ? genresDeclarateStatus : null,
+          file_manager_id: uploadFilePath.fmid,
+          fid: featId ? featId : null,
+        },
+      })
+
+      return song.sid
+    } catch (error) {
+      console.error(error)
     }
-
-    await this.prisma.song.update({
-      where: {
-        sid: song.sid,
-      },
-      data: {
-        gsid: genresDeclarateStatus ? genresDeclarateStatus : null,
-        file_manager_id: uploadFilePath.fmid,
-        fid: featId ? featId : null,
-      },
-    })
-
-    return song.sid
   }
 
   async createSongList(songsData: NewSongFragment[]): Promise<number[]> {
-    const songsIds: number[] = []
+    try {
+      const songsIds: number[] = []
 
-    for (const song of songsData) {
-      const songId = await this.createSong(song)
-      if (songId) {
-        songsIds.push(songId)
+      for (const song of songsData) {
+        const songId = await this.createSong(song)
+        if (songId) {
+          songsIds.push(songId)
+        }
       }
-    }
 
-    if (songsIds.length) {
-      return songsIds
+      if (songsIds.length) {
+        return songsIds
+      }
+    } catch (error) {
+      throw new Error(error)
     }
   }
 }

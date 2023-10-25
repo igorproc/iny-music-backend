@@ -7,14 +7,21 @@ import { AuthService } from '@/user/auth/auth.service'
 import { DeviceService } from '@/device/device.service'
 import { FileManagerService } from '@/file-manager/file-manager.service'
 
-import { UserModel } from '@/user/graphql/dto/user.dto'
-import { RegisterUser } from '@/user/graphql/dto/create-user.dto'
-import { UserLogin } from '@/user/graphql/dto/login-user.dto'
+import {
+  UserModel,
+  RegisterUser,
+  UserLogin,
+  UserLogout,
+  UpdateUserAvatar,
+  UpdateUserAvatarOutput,
+} from '@/user/graphql/dto/user.dto'
+
 import { UserGender, UserRole } from './graphql/dto/user-enums'
 
 import { validateEmail } from '@utils/validate/email.util'
 import { validatePhone } from '@utils/validate/phone.util'
 import { SALT } from './const/user.const'
+import { Request } from 'express'
 
 @Injectable()
 export class UserService {
@@ -95,7 +102,7 @@ export class UserService {
     return true
   }
 
-  async createNewUser(userData: RegisterUser, clientId: string, request): Promise<User> {
+  async createNewUser(userData: RegisterUser, clientId: string, request: Request): Promise<User> {
     try {
       await this.reiquredFieldsAreValidateAndUnique(userData)
       const userDevice = await this.device.getDeviceByClientId(clientId)
@@ -130,12 +137,12 @@ export class UserService {
       }
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new HttpException('there\'s something wrong with data', HttpStatus.BAD_REQUEST)
+        throw new HttpException("there's something wrong with data", HttpStatus.BAD_REQUEST)
       }
     }
   }
 
-  async loginUser(loginData: UserLogin, request): Promise<UserModel> {
+  async loginUser(loginData: UserLogin, request: Request): Promise<UserModel> {
     try {
       const userData = await this.auth.signIn(loginData, request)
 
@@ -143,9 +150,37 @@ export class UserService {
         return await this.getUserByUid(userData.uid)
       }
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new HttpException('Incorrect Login', HttpStatus.BAD_REQUEST)
+      throw new HttpException('Incorrect Login', HttpStatus.BAD_REQUEST)
+    }
+  }
+
+  async updateUserAvatar(updateData: UpdateUserAvatar): Promise<UpdateUserAvatarOutput> {
+    try {
+      const uploadedFileData = await this.fileManager.createFileManagerRecord(updateData.avatarFile, updateData.userId)
+      if (!uploadedFileData) {
+        return
       }
+      const updatedUserAvatar = await this.prisma.user.update({
+        where: { uid: updateData.userId },
+        data: { avatar_id: uploadedFileData.fmid },
+      })
+      if (!updatedUserAvatar) {
+        return
+      }
+      return { avatarPath: uploadedFileData.path }
+    } catch (error) {
+      throw new HttpException('Invalid File', HttpStatus.OK)
+    }
+  }
+
+  async logoutUser(logoutData: UserLogout, request: Request): Promise<boolean> {
+    try {
+      const response = request.res
+      response.cookie('Authorization', '', { maxAge: 0 })
+
+      return await this.device.removeUidFromUserDevice(logoutData.clientId, logoutData.uid)
+    } catch (error) {
+      throw new Error(error)
     }
   }
 }

@@ -37,13 +37,13 @@ export class PlaylistContentService {
     }
   }
 
-  async createCustomContent(playlistConentData: TCustomPlaylistData): Promise<boolean> {
+  async createCustomContent(playlistContentData: TCustomPlaylistData): Promise<boolean> {
     try {
-      for (const songId of playlistConentData.songsIds) {
+      for (const songId of playlistContentData.songsIds) {
         await this.prisma.playlistContent.create({
           data: {
-            pid: playlistConentData.pid,
-            who_added_uid: playlistConentData.uid,
+            pid: playlistContentData.pid,
+            who_added_uid: playlistContentData.uid,
             sid: songId,
             created_at: Math.floor(Date.now() / 1000),
             updated_at: Math.floor(Date.now() / 1000),

@@ -54,4 +54,16 @@ export class DeviceService {
       throw new HttpException('device is not found', HttpStatus.I_AM_A_TEAPOT)
     }
   }
+
+  async removeUidFromUserDevice(cliendId: string, uid: number): Promise<boolean> {
+    try {
+      const deviceData = await this.prisma.device.update({
+        where: { client_id: cliendId },
+        data: { uid: null },
+      })
+      return !!deviceData
+    } catch (error) {
+      throw new HttpException('device is bot found', HttpStatus.OK)
+    }
+  }
 }

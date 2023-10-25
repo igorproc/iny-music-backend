@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""Response for update avatar"""
+type UpdateUserAvatarOutput {
+  avatarPath: String!
+}
+
 """User"""
 type UserModel {
   uid: ID
@@ -90,7 +95,7 @@ type Query {
   getUserByUid(id: Int!): UserModel!
 
   """Get All Genres List"""
-  getAllGenreList: [GenreModel!]
+  getAllGenreList: [GenreModel!]!
 
   """get album data"""
   getAlbumByShareToken(shareToken: String!): AlbumData!
@@ -101,13 +106,22 @@ type Mutation {
   createUser(userData: RegisterUser!, clientId: String!): UserModel
 
   """login user"""
-  loginUser(loginData: UserLogin!): UserModel
+  loginUser(loginData: UserLogin!): UserModel!
+
+  """logout user"""
+  logoutUser(logoutData: UserLogout!): Boolean!
+
+  """Update user avatar"""
+  updateUserAvatar(updateAvatarData: UpdateUserAvatar!): UpdateUserAvatarOutput!
 
   """Declarate a new device"""
   createUserDevice(deviceData: NewDeviceInput!): DeviceModel
 
   """create an artist"""
   createArtist(artistInput: CreateArtistInput!): ArtistModel!
+
+  """Fill genres into db"""
+  fillGenresList: Boolean!
 
   """add new album (only artist)"""
   createNewAlbum(albumData: NewAlbumModel!): String
@@ -116,7 +130,7 @@ type Mutation {
   uploadSong(playlistContentData: NewPlaylistContentData!): Int!
 }
 
-"""input for input user data"""
+"""input for register user"""
 input RegisterUser {
   email: String!
   password: String!
@@ -127,11 +141,26 @@ input RegisterUser {
   phone: String!
 }
 
-"""input for input user data"""
+"""input for login user"""
 input UserLogin {
   email: String!
   password: String!
 }
+
+"""input for logout user"""
+input UserLogout {
+  uid: Int!
+  clientId: String!
+}
+
+"""Data for update a avatar file"""
+input UpdateUserAvatar {
+  userId: Int!
+  avatarFile: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 """device data input"""
 input NewDeviceInput {
@@ -147,9 +176,6 @@ input CreateArtistInput {
   altName: String
   avatarFile: Upload
 }
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input NewAlbumModel {
   uid: Int!
